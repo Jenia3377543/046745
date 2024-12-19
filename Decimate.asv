@@ -1,0 +1,10 @@
+function [y_n] = Decimate(D,x)
+% Apply low pass filter
+% x = x
+N_samples = length(x);
+N_samples_decimated = 
+sampled_sinc = sinc((-N_samples_interp/2:N_samples_interp/2)/(M));
+
+y_n = x(1:D:end);
+% 
+end

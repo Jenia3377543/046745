@@ -1,0 +1,22 @@
+x = 1:20;
+an = [-1.888 1];
+bn = [1 2 1 6];
+[y_n] = Filter(an,bn,x);
+
+y_n_2 = filter(bn, an, x);
+%% Interpolation example
+[y_n] = Interpolate(2,x);
+%% Decimation example
+N = 100;
+discreate_time_domain = 0:N;
+[x1] = Sine(5,N,0);
+[x2] = Sine(10,N,0);
+x = x1 + x2;
+D = 3;
+[y_n] = Decimate(D, x);
+
+figure(999); hold all;
+plot(discreate_time_domain, x, '-*', 'DisplayName', '$X[n]$');
+plot(discreate_time_domain, y_n, '--*r', 'DisplayName', 'Decimated $X[n]$')
+%% 
+S = load('laughter.mat');
