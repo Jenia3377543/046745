@@ -43,6 +43,7 @@ figure;
 imshow(imread("blocks\wgn.png"));
 title('WGN block');
 
+
 N = 1000;
 edges = -10:0.25:10;
 [y_n1] = WGN(N,0,1);
@@ -219,8 +220,8 @@ PlotAdd(y_n3, dtd, 'WGN(0,1)');
 % around the expected QAMs locations.
 % Let's apply Scalar multiplications:
 figure;
-imshow(imread("blocks\scalar.png"));
-title('Scalar block');
+imshow(imread("blocks\scal.png"));
+title('Sine block');
 
 d = (0:15)';
 s = qammod(d,16);
@@ -261,10 +262,6 @@ title('Additive complex noise')
 % $F_{cutoff}=50[Hz]$. We expect to get only the $sin(2\pi\cdot 35t)$ as
 % result.
 % Let's apply filters:
-figure;
-imshow(imread("blocks\filter.png"));
-title('Filter block');
-
 N = 100;
 [x_n, dtd] = Sine(5,N,0);
 DERIVATIVE_FILTER = [1, -1] * N / (2*pi*5);
@@ -349,9 +346,6 @@ title({'Low passed X(t) in frequency domain', 'F_{cutoff}=50[Hz]'});
 % discontinuity (if we take full period)
 % * $x_2[n]$ - Gibbs distortion will occur because the signal has discontinuity
 % * $x_3[n]$ - will be slightly distorted beacuse there is 'smaller' discontinuity (only at the edges)
-figure;
-imshow(imread("blocks\interpolator.png"));
-title('Interpolator block');
 
 % Example 1
 N = 64;
@@ -419,9 +413,6 @@ title('Example 3 - Gauss Interpolation')
 % of deltas, so we will get more distortion/Gibbs phenomenom.
 % * $x_3[n]$ - similarly to $x_2[n]$ but $x_3[n]$ is smoother, so we expect
 % get less distortion than in $x_2[n]$ case (because it  contains less high frequencies).
-figure;
-imshow(imread("blocks\decimator.png"));
-title('Decimator block');
 
 % Example 1
 N = 64;
