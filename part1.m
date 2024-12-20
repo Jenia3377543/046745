@@ -2,9 +2,9 @@ addpath(genpath('PlotUtils'))
 %% Sine examples
 % Lets show 3 basic examples using SINE function:
 % 
-% * $y_n1 = sin(2\pi 5t)$
-% * $y_n2 = sin(2\pi 5t + \pi)$
-% * $y_n3 = y_n1 + y_n3$
+% * $y_1[n] = sin(2\pi 5t)$
+% * $y_2[n] = sin(2\pi 5t + \pi)$
+% * $y_3[n] = y_1[n] + y_2[n]$
 % 
 % The second signal is delayed by $\pi$ so we consider to get cosine instead.
 % The third one, is the sum of sine and cosine with the same frequency, so
@@ -50,6 +50,7 @@ PlotWGN(y_n3, 'Y_3[n]', 1, 2, time_domain);
 %% Rect examples
 % Let's consider 3 examples for Rect function:
 % Let N = 100;
+% 
 % * $y_1[n] = Rect(0,25,N)$ - window function between 0 and 25 with 100
 % samples
 % * $y_2[n] = Rect(0,25,3*N)$ - same as $y_1[n]$ but also padded with
@@ -58,7 +59,9 @@ PlotWGN(y_n3, 'Y_3[n]', 1, 2, time_domain);
 % to 75 with 100 samples
 % 
 % The DFT of $y_1[n]$ is SINC, when the signal is padded with zeros at the
-% end the resolution in frequency domain improved ($y_2[n]$).
+% end the resolution in frequency domain improved ($y_2[n]$), so we get the
+% same SINC as in case of $y_1[n]$ but with better resolution in frequency
+% domain.
 % And finally, when the window width increase the SINC width in frequency
 % domain decrease approaching to $\delta(\omega)$.
 % Lets show it:
@@ -82,7 +85,7 @@ PlotRect(y_n3, "Y_3[n]", dtd3)
 % The gaussian can be used as a window function. It's smoother then rect window. 
 % One can see, that when:
 % 
-% * $\sigma^2 \to \infty$ - it tends to be like infinite rect window\DC so the spectrum is $delta(\omega)$
+% * $\sigma^2 \to \infty$ - it tends to be like infinite rect window\DC so the spectrum is $\delta(\omega)$
 % * $\sigma^2 \to 0$, it tends to be $\delta(t)$ so the spectrum is flat. 
 % * $\sigma^2 <\infty$, it can interpretated as smooth window with nice properties.
 
@@ -184,7 +187,7 @@ PlotAdd(y_n3, dtd, 'WGN(0,1)');
 %% Scalar examples - Rotated 16QAM
 % Let's consider 3 examples for Scalar function.
 % 
-% We will define set of compose numbers with 2 energy levels and phases
+% We will define set of complex numbers with 2 energy levels and phases
 % $n\pi/4$ (16QAM symbols).
 % 
 % By multiplying these numbers by a scalar, we can observe interesting phenomenas.
@@ -200,6 +203,7 @@ PlotAdd(y_n3, dtd, 'WGN(0,1)');
 d = (0:15)';
 s = qammod(d,16);
 scatterplot(s);
+title('Base - 16QAM in IQ plane')
 
 s_amplified = Scalar(s,5);
 scatterplot(s_amplified);
@@ -230,7 +234,7 @@ title('Additive complex noise')
 % the maximum will be placed at the begining of the delayed rect on input
 % signal.
 % 
-% With Lowpass filter we wiil use $X(t) = sin(2\pi\cdot 35t) + sin(2\pi\cdot
+% With Lowpass filter we will use $X(t) = sin(2\pi\cdot 35t) + sin(2\pi\cdot
 % 200t)$ as an input signal. We will design FIR lowpass filter, with
 % $F_{cutoff}=50[Hz]$. We expect to get only the $sin(2\pi\cdot 35t)$ as
 % result.
@@ -292,6 +296,136 @@ xlabel('Frequency [Hz]');
 ylabel('|Amplitude|');
 title({'Low passed X(t) in frequency domain', 'F_{cutoff}=50[Hz]'});
 %% Interpolate examples
+% Let's consider 3 examples for Interpolate function:
+% 
+% * $x_1[n]=sin(2\pi\cdot5n/64)$  - sine wave
+% * $x_2[n]=Rect(0,0.5,64)$ - rect window
+% * $x_3[n]=Gauss(0,0.75,64)$ - gauss window
+%
+% The signals have the following BW:
+% 
+% * $x_1[n]$ - $\delta(f+-5)$, so it's finite BW
+% * $x_2[n]$ - infinite sum of deltas in frequency domain, so it's infinite
+% BW
+% * $x_3[n]$ - depending on $\sigma^2$, it tends to include more\less high
+% frequencies. if $\sigma^2 \to \infty$, the window has fast changes
+% otherwise it changes "slowly", so we expect to get wide and narrow BW
+% respectively
+% 
+% The fast changes implies kind of 'discontinuity' and we know (044198)
+% that the reconstructed signal will converge to $(f(a^+)+f(a^-))/2$ when
+% $a$ represents a point of discontinuity. Furthermore, spectral artifacts
+% such as the Gibbs phenomenom will be introduced into the signal.
+% 
+% So we expect that:
+% 
+% * $x_1[n]$ - no distortion at all beacuse there is no
+% discontinuity (if we take full period)
+% * $x_2[n]$ - Gibbs distortion will occur because the signal has discontinuity
+% * $x_3[n]$ - will be slightly distorted beacuse there is 'smaller' discontinuity (only at the edges)
 
+% Example 1
+N = 64;
+M = 2;
+[x_n, dtd] = Sine(5,N,0);
+[y_n] = Interpolate(M,x_n);
+
+interpolated_domain = (0:N*M-1)/(N*M);
+
+figure; hold all;
+plot(dtd, x_n, '--*', 'DisplayName', 'X[n]');
+plot(interpolated_domain, y_n, 'x', 'DisplayName', 'Interpolated X[n]');
+xlabel('Time[sec]');
+ylabel('Amplitude');
+legend;
+title('Example 1 - Sine Inerpolation')
+% Example 2
+[x_n_rect, dtd_rect] = Rect(0,0.5,N,'NormalizeTD',true);
+[y_n_rect] = Interpolate(M, x_n_rect);
+
+figure; hold all;
+plot(dtd_rect, x_n_rect, '--*', 'DisplayName', 'X[n]');
+plot(interpolated_domain, y_n_rect, 'x', 'DisplayName', 'Interpolated Rect');
+xlabel('Time[sec]');
+ylabel('Amplitude');
+legend;
+title('Example 2 - Rect Interpolation')
+
+% Example 3
+[x_n_gauss, dtd_gauss] = Gauss(0,0.75,N,'NormalizeTD',true);
+[y_n_gauss] = Interpolate(M, x_n_gauss);
+
+figure; hold all;
+plot(dtd_rect, x_n_gauss, '--*', 'DisplayName', 'X[n]');
+plot(interpolated_domain, y_n_gauss, 'x', 'DisplayName', 'Interpolated Gauss');
+xlabel('Time[sec]');
+ylabel('Amplitude');
+legend;
+title('Example 3 - Gauss Interpolation')
 %% Decimate examples
+% Let's consider 3 examples for Decimate function:
+% (Same as for intepolation)
+% 
+% * $x_1[n]=sin(2\pi\cdot5n/64)$  - sine wave
+% * $x_2[n]=Rect(0,0.5,64)$ - rect window
+% * $x_3[n]=Gauss(0,0.75,64)$ - gauss window
+% 
+% Each of the signals above has differnet BW:
+% 
+% * $x_1[n]$ - $\delta(f+-5)$, so it's finite BW
+% * $x_2[n]$ - infinite sum of deltas in frequency domain, so it's infinite
+% BW
+% * $x_3[n]$ - depending on $\sigma^2$, it tends to include more\less high
+% frequencies. if $\sigma^2 \to \infty$, the window has fast changes
+% otherwise it changes "slowly", so we expect to get wide and narrow BW
+% respectively.
+% 
+% As a part of decimation, we filter out some of the high frequencies
+% in order to avoid aliasing, so the reconstructed signal is composed of
+% smaller BW. So we expect that decimated signals:
+% 
+% * $x_1[n]$ - still can be seen as periodic wave (if the $F_{cutoff}$ high
+% enough), otherwise will be filtered out.
+% * $x_2[n]$ - the reconstructed signal will be composed with less amount
+% of deltas, so we will get more distortion/Gibbs phenomenom.
+% * $x_3[n]$ - similarly to $x_2[n]$ but $x_3[n]$ is smoother, so we expect
+% get less distortion than in $x_2[n]$ case (because it  contains less high frequencies).
 
+% Example 1
+N = 64;
+D = 4;
+[x_n, dtd] = Sine(5,N,0);
+[y_n] = Decimate(D,x_n);
+
+decimated_domain = (0:N/D-1)/(N/D);
+
+figure; hold all;
+plot(dtd, x_n, '--*', 'DisplayName', 'X[n]');
+plot(decimated_domain, y_n, '--*', 'DisplayName', 'Decimated X[n]');
+xlabel('Time[sec]');
+ylabel('Amplitude');
+legend;
+title('Example 1 - Sine Decimation')
+% Example 2
+[x_n_rect, dtd_rect] = Rect(0,0.5,N,'NormalizeTD',true);
+[y_n_rect] = Decimate(D, x_n_rect);
+
+figure; hold all;
+plot(dtd_rect, x_n_rect, '--*', 'DisplayName', 'X[n]');
+plot(decimated_domain, y_n_rect, '--*', 'DisplayName', 'Decimated Rect');
+xlabel('Time[sec]');
+ylabel('Amplitude');
+legend;
+title('Example 2 - Rect Decimation')
+
+% Example 3
+[x_n_gauss, dtd_gauss] = Gauss(0,0.75,N,'NormalizeTD',true);
+[y_n_gauss] = Decimate(D, x_n_gauss);
+
+figure; hold all;
+plot(dtd_rect, x_n_gauss, '--*', 'DisplayName', 'X[n]');
+plot(decimated_domain, y_n_gauss, '--*', 'DisplayName', 'Decimated Gauss');
+xlabel('Time[sec]');
+ylabel('Amplitude');
+legend;
+title('Example 3 - Gauss Decimation')
