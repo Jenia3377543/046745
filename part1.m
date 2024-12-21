@@ -1,3 +1,4 @@
+clc; clear all; close all;
 addpath(genpath('PlotUtils'));
 addpath(genpath('blocks'));
 %% Sine examples
@@ -10,7 +11,7 @@ addpath(genpath('blocks'));
 % The second signal is delayed by $\pi$ so we consider to get cosine instead.
 % The third one, is the sum of sine and cosine with the same frequency, so
 % we consider to get ZEROS:
-figure;
+figure('Position', [0 0 400 300]);
 imshow(imread("blocks\sine.png"));
 title('Sine block');
 
@@ -139,7 +140,7 @@ w_triang = ifft(fft(w_rect).^2);
 freq_domain = pi * (-N/2:N/2-1) / N;
 
 [y_n, dtd] = Sine(20, N, 0);
-figure(3); clf
+figure;
 nexttile; hold all;
 plot(dtd, w_rect, '--*', 'DisplayName', 'Rect');
 plot(dtd, w_gauss, '--*', 'DisplayName', 'Gauss');
@@ -257,8 +258,8 @@ title('Additive complex noise')
 % signal.
 % 
 % With Lowpass filter we will use $X(t) = sin(2\pi\cdot 35t) + sin(2\pi\cdot
-% 200t)$ as an input signal. We will design FIR lowpass filter, with
-% $F_{cutoff}=50[Hz]$. We expect to get only the $sin(2\pi\cdot 35t)$ as
+% 200t)$ as an input signal. We will design IIR lowpass filter, with
+% $F_{cutoff}=50[Hz]$, 3 order. We expect to get only the $sin(2\pi\cdot 35t)$ as
 % result.
 % Let's apply filters:
 figure;
@@ -294,12 +295,15 @@ title(compose('Filter example - %s', 'Matched filter'));
 % Design normalized low-pass filter
 Fs = 500;             % Sampling frequency (Hz)
 Fc = 50;              % Cutoff frequency (Hz)
-N = 16;                % Filter order (number of taps)
-window = hamming(N+1); % Hamming window
-h = fir1(N, Fc/(Fs/2), 'low', window); % FIR filter coefficients
+
+h = designfilt('lowpassiir','FilterOrder',3,'HalfPowerFrequency',Fc/(Fs/2));
+[num,den] = tf(h);
+
+figure;
+freqz(h);
 
 x_n = Sine(35,Fs,0) + Sine(200,Fs,0);
-y_n = Filter(1, h, x_n);
+y_n = Filter(den, num, x_n);
 
 figure;
 nexttile;
@@ -448,7 +452,7 @@ plot(decimated_domain, y_n_rect, '--*', 'DisplayName', 'Decimated Rect');
 xlabel('Time[sec]');
 ylabel('Amplitude');
 legend;
-title('Example 2 - Rect Decimation')
+title('Example 2 - Rect Decimation');
 
 % Example 3
 [x_n_gauss, dtd_gauss] = Gauss(0,0.75,N,'NormalizeTD',true);
@@ -460,4 +464,4 @@ plot(decimated_domain, y_n_gauss, '--*', 'DisplayName', 'Decimated Gauss');
 xlabel('Time[sec]');
 ylabel('Amplitude');
 legend;
-title('Example 3 - Gauss Decimation')
+title('Example 3 - Gauss Decimation');

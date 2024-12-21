@@ -10,7 +10,7 @@ addpath(genpath('blocks'));
 % The second signal is delayed by $\pi$ so we consider to get cosine instead.
 % The third one, is the sum of sine and cosine with the same frequency, so
 % we consider to get ZEROS:
-figure;
+figure('Position', [0 0 400 300]);
 imshow(imread("blocks\sine.png"));
 title('Sine block');
 
@@ -39,10 +39,9 @@ legend;
 % The samples at different times are uncorrelated, so we expect to observe a random signal. 
 % Additionally, when examining the empirical probability density function (PDF), 
 % we expect to obtain a normal distribution with the parameters above:
-figure;
+figure('Position', [0 0 400 300]);
 imshow(imread("blocks\wgn.png"));
 title('WGN block');
-
 
 N = 1000;
 edges = -10:0.25:10;
@@ -72,7 +71,7 @@ PlotWGN(y_n3, 'Y_3[n]', 1, 2, time_domain);
 % And finally, when the window width increase the SINC width in frequency
 % domain decrease approaching to $\delta(\omega)$.
 % Lets show it:
-figure;
+figure('Position', [0 0 400 300]);
 imshow(imread("blocks\rect.png"));
 title('Rect block');
 
@@ -98,7 +97,7 @@ PlotRect(y_n3, "Y_3[n]", dtd3)
 % * $\sigma^2 \to \infty$ - it tends to be like infinite rect window\DC so the spectrum is $\delta(\omega)$
 % * $\sigma^2 \to 0$, it tends to be $\delta(t)$ so the spectrum is flat. 
 % * $\sigma^2 <\infty$, it can interpretated as smooth window with nice properties.
-figure;
+figure('Position', [0 0 400 300]);
 imshow(imread("blocks\gauss.png"));
 title('Gauss block');
 
@@ -128,7 +127,7 @@ PlotGauss(y_n3, "Y_3[n]",  0, 0.1, dtd3);
 % * Rect response is Dirichlet func in frequency domain.
 % * Gauss is smoother than rect, so we expect to get lower sidelobs.
 % * Triangle is Dirichlet squared, so lobes should be lower comparing to rect.
-figure;
+figure('Position', [0 0 400 300]);
 imshow(imread("blocks\prod.png"));
 title('Prod block');
 
@@ -140,7 +139,7 @@ w_triang = ifft(fft(w_rect).^2);
 freq_domain = pi * (-N/2:N/2-1) / N;
 
 [y_n, dtd] = Sine(20, N, 0);
-figure(3); clf
+figure;
 nexttile; hold all;
 plot(dtd, w_rect, '--*', 'DisplayName', 'Rect');
 plot(dtd, w_gauss, '--*', 'DisplayName', 'Gauss');
@@ -187,7 +186,7 @@ sgtitle({"Prod example", "Windows comparison"});
 % * Finally, $y_3[n]$ will look differently than $X[n]$ because the SNR is
 % bad, but in frequency domain we are able to see the deltas. Intuitively, that's because DFT does integration over time.
 % Let's compute add operations:
-figure;
+figure('Position', [0 0 400 300]);
 imshow(imread("blocks\add.png"));
 title('Add block');
 
@@ -219,9 +218,9 @@ PlotAdd(y_n3, dtd, 'WGN(0,1)');
 % * Add additive complex noise - the symbols will be normally distributed
 % around the expected QAMs locations.
 % Let's apply Scalar multiplications:
-figure;
-imshow(imread("blocks\scal.png"));
-title('Sine block');
+figure('Position', [0 0 400 300]);
+imshow(imread("blocks\scalar.png"));
+title('Scalar block');
 
 d = (0:15)';
 s = qammod(d,16);
@@ -258,10 +257,14 @@ title('Additive complex noise')
 % signal.
 % 
 % With Lowpass filter we will use $X(t) = sin(2\pi\cdot 35t) + sin(2\pi\cdot
-% 200t)$ as an input signal. We will design FIR lowpass filter, with
-% $F_{cutoff}=50[Hz]$. We expect to get only the $sin(2\pi\cdot 35t)$ as
+% 200t)$ as an input signal. We will design IIR lowpass filter, with
+% $F_{cutoff}=50[Hz]$, 3 order. We expect to get only the $sin(2\pi\cdot 35t)$ as
 % result.
 % Let's apply filters:
+figure('Position', [0 0 400 300]);
+imshow(imread("blocks\filter.png"));
+title('Filter block');
+
 N = 100;
 [x_n, dtd] = Sine(5,N,0);
 DERIVATIVE_FILTER = [1, -1] * N / (2*pi*5);
@@ -291,12 +294,15 @@ title(compose('Filter example - %s', 'Matched filter'));
 % Design normalized low-pass filter
 Fs = 500;             % Sampling frequency (Hz)
 Fc = 50;              % Cutoff frequency (Hz)
-N = 16;                % Filter order (number of taps)
-window = hamming(N+1); % Hamming window
-h = fir1(N, Fc/(Fs/2), 'low', window); % FIR filter coefficients
+
+h = designfilt('lowpassiir','FilterOrder',3,'HalfPowerFrequency',Fc/(Fs/2));
+[num,den] = tf(h);
+
+figure;
+freqz(h);
 
 x_n = Sine(35,Fs,0) + Sine(200,Fs,0);
-y_n = Filter(1, h, x_n);
+y_n = Filter(den, num, x_n);
 
 figure;
 nexttile;
@@ -346,6 +352,9 @@ title({'Low passed X(t) in frequency domain', 'F_{cutoff}=50[Hz]'});
 % discontinuity (if we take full period)
 % * $x_2[n]$ - Gibbs distortion will occur because the signal has discontinuity
 % * $x_3[n]$ - will be slightly distorted beacuse there is 'smaller' discontinuity (only at the edges)
+figure('Position', [0 0 400 300]);
+imshow(imread("blocks\interpolator.png"));
+title('Interpolator block');
 
 % Example 1
 N = 64;
@@ -413,6 +422,9 @@ title('Example 3 - Gauss Interpolation')
 % of deltas, so we will get more distortion/Gibbs phenomenom.
 % * $x_3[n]$ - similarly to $x_2[n]$ but $x_3[n]$ is smoother, so we expect
 % get less distortion than in $x_2[n]$ case (because it  contains less high frequencies).
+figure('Position', [0 0 400 300]);
+imshow(imread("blocks\decimator.png"));
+title('Decimator block');
 
 % Example 1
 N = 64;
