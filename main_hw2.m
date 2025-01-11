@@ -87,33 +87,69 @@ title('5 random frequencies in time domain');
 ylabel('Amplitude');
 xlabel('Time domain[sec]');
 %% Signal games
-% Signal Example 1
-% Filter the signal using threshold block in frequency domain
+% Signal Example 1 - Filtering in frequency domain
+% Filtering out WGN noise using threshold block in frequency domain.
 % 
 % Let's take a look at signals with known frequency. We have choose the
 % frequencies s.t. they fall directly on discrete frequency bins, so there
 % is no energy spread in frequency domain and we can find the expected
-% energy at each frequency bin.
-% 
-% We will consider 
-% Drawbacks - must approximate the frequency exactly.
+% energy at each frequency bin. As we have seen in class, the energy in
+% frequency domain equals to M/2 on each delta, so in order to filter out
+% WGN let choose th=$M/3$. As we can see, we have filtered out the noise.
+% In the STFT we can see some noise in high frequncies and 4 deltas at
+% +-10[Hz] and +-50[Hz] as expected.
+
 M = 2048;
 freq_domain = Fs * (-M/2:M/2-1)/M;
 figure;
 imshow(imread('blocks2\HW2-Example1.png'));
 title('Example 1 block diagram');
 
-x_n1 = y_n_f1_f5(:, 1) + 1 * y_n_f1_f5(:, 3) + 0 * y_n_f1_f5(:, 5) + noise_n';
+x_n1 = y_n_f1_f5(:, 1) + y_n_f1_f5(:, 5) + noise_n';
 W = STFT(x_n1, M);
 Wf = Threshold(abs(W), M/3);
-figure;
-plot(freq_domain, abs(fftshift(W(1, :))));
-
 xnr= ISTFT(Wf);
-figure; 
-plot(real(xnr));
 
-% imagesc(abs(fftshift(W, 2)));
-% Signal Example 2
+figure;
+nexttile;
+plot(discrete_time_domain, x_n1);
+title('Example #1, Signal in time domain');
+xlabel('Time domain [sec]');
+ylabel('Amplitude');
 
-% Signal Example 3
+nexttile;
+imagesc(abs(fftshift(W)));
+
+ticks_indices = 10:10:2048;
+
+xticks(ticks_indices);
+xticklabels(compose("%.2f", freq_domain(ticks_indices)));
+xlim(M/2 + 64 * [-1 1]);
+
+title('STFT');
+xlabel('Frequncy domain [Hz]');
+ylabel('Window index');
+colorbar;
+
+nexttile;
+plot(discrete_time_domain, real(xnr));
+title('Filtered signal');
+xlabel('Time domain [sec]');
+ylabel('Amplitude');
+
+nexttile;
+imagesc(abs(fftshift(Wf)));
+ticks_indices = 10:10:2048;
+
+xticks(ticks_indices);
+xticklabels(compose("%.2f", freq_domain(ticks_indices)));
+xlim(M/2 + 64 * [-1 1]);
+
+title('STFT after denoising');
+xlabel('Frequncy domain [Hz]');
+ylabel('Window index');
+colorbar;
+% Signal Example 2 - Filtering in time domain
+
+
+% Signal Example 3 - Filtering in frequency and time domain

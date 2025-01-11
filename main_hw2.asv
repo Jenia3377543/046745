@@ -88,26 +88,53 @@ ylabel('Amplitude');
 xlabel('Time domain[sec]');
 %% Signal games
 % Signal Example 1
-% Filter the signal using threshold block in frequency domain
+% Filtering out WGN noise using threshold block in frequency domain.
 % 
 % Let's take a look at signals with known frequency. We have choose the
 % frequencies s.t. they fall directly on discrete frequency bins, so there
 % is no energy spread in frequency domain and we can find the expected
-% energy at each frequency bin.
+% energy at each frequency bin. As we have seen in class, the energy in
+% frequency domain equals to M/2 on each delta, so in order to filter out
+% WGN let choose th=$M/3$. As we can see, we have filtered out the noise.
 % 
-% We will consider 
-% Drawbacks - must approximate the frequency exactly.
 M = 2048;
 freq_domain = Fs * (-M/2:M/2-1)/M;
 figure;
 imshow(imread('blocks2\HW2-Example1.png'));
 title('Example 1 block diagram');
 
-x_n1 = y_n_f1_f5(:, 1) + 2.5 * y_n_f1_f5(:, 3) + 3 * y_n_f1_f5(:, 5);
+x_n1 = y_n_f1_f5(:, 1) + y_n_f1_f5(:, 5) + noise_n';
 W = STFT(x_n1, M);
-Wf = Threshold(abs(W), M + 1);
+Wf = Threshold(abs(W), M/3);
+xnr= ISTFT(Wf);
+
 figure;
-plot(freq_domain, abs(fftshift(W(1, :))));
+nexttile;
+plot(discrete_time_domain, x_n1);
+title('Example #1, Signal in time domain');
+xlabel('Time domain [sec]');
+ylabel('Amplitude');
+
+nexttile;
+imagesc(abs(fftshift(W)));
+
+
+ticks_indices = 1 + 0:10:2048;
+ticks_indices(1) = 1;
+xticks(ticks_indices);
+xticklabels(compose("%.2f", freq_domain(ticks_indices)));
+xlim(M/2 + 64 * [-1 1]);
+title('STFT');
+xlabel('Frequncy domain [Hz]');
+ylabel('Window index');
+colorbar;
+
+nexttile;
+plot(discrete_time_domain, real(xnr));
+title('Filtered signal');
+xlabel('Time domain [sec]');
+ylabel('Amplitude');
+
 % imagesc(abs(fftshift(W, 2)));
 % Signal Example 2
 
