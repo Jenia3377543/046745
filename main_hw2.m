@@ -94,7 +94,7 @@ xlabel('Time domain[sec]');
 % frequencies s.t. they fall directly on discrete frequency bins, so there
 % is no energy spread in frequency domain and we can find the expected
 % energy at each frequency bin. As we have seen in class, the energy in
-% frequency domain equals to M/2 on each delta, so in order to filter out
+% frequency domain of pure sine\cosine equals to M/2 on each delta, so in order to filter out
 % WGN let choose th=$M/3$. As we can see, we have filtered out the noise.
 % In the STFT we can see some noise in high frequncies and 4 deltas at
 % +-10[Hz] and +-50[Hz] as expected.
@@ -105,7 +105,7 @@ figure;
 imshow(imread('blocks2\HW2-Example1.png'));
 title('Example 1 block diagram');
 
-x_n1 = y_n_f1_f5(:, 1) + y_n_f1_f5(:, 5) + noise_n';
+x_n1 = Scalar(1.5, y_n_f1_f5(:, 1)) + Scalar(2, y_n_f1_f5(:, 5)) + noise_n';
 W = STFT(x_n1, M);
 Wf = Threshold(abs(W), M/3);
 xnr= ISTFT(Wf);
