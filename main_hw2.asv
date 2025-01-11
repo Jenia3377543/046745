@@ -1,14 +1,17 @@
 clc; clear all; close all;
 %% Tools upgrade
 % We have created the Rand, Conj, Threshold, Complex, STFT and ISTFT blocks.
+% Also we have defined DFT basis block that uses Complex block in order to
+% define DFT projection matrix which can then used in STFT and ISTFT.
+
 blocks2 = struct2table(dir("blocks2"));
 blocks2 = blocks2(~ismember(blocks2.name, {'.', '..'}), :);
-block_names = split(blocks2.name, '.')
+block_names = split(blocks2.name, '.'); block_names = block_names(:, 1);
 blocks2_path = fullfile(blocks2.folder, blocks2.name);
 for i = 1:size(blocks2_path, 1)
     figure;
     imshow(imread(blocks2_path{i, :}));
-    title(compose("%s block diagram", string(blocks2(i, :).name)))
+    title(compose("%s block diagram", string(block_names(i, :))))
 end
 %% Section 3
 delta_time = 1;
@@ -83,3 +86,29 @@ plot(discrete_time_domain, y_n_f1_f5_rand);
 title('5 random frequencies in time domain');
 ylabel('Amplitude');
 xlabel('Time domain[sec]');
+%% Signal games
+% Signal Example 1
+% Filter the signal using threshold block in frequency domain
+% 
+% Let's take a look at signals with known frequency. We have choose the
+% frequencies s.t. they fall directly on discrete frequency bins, so there
+% is no energy spread in frequency domain and we can find the expected
+% energy at each frequency bin.
+% 
+% We will consider 
+% Drawbacks - must approximate the frequency exactly.
+M = 2048;
+freq_domain = Fs * (-M/2:M/2-1)/M;
+figure;
+imshow(imread('blocks2\HW2-Example1.png'));
+title('Example 1 block diagram');
+
+x_n1 = y_n_f1_f5(:, 1) + 2.5 * y_n_f1_f5(:, 3) + 3 * y_n_f1_f5(:, 5);
+W = STFT(x_n1, M);
+Wf = Threshold(abs(W), M + 1);
+figure;
+plot(freq_domain, abs(fftshift(W(1, :))));
+% imagesc(abs(fftshift(W, 2)));
+% Signal Example 2
+
+% Signal Example 3

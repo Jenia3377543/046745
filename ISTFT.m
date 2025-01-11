@@ -1,16 +1,17 @@
 function [y] = ISTFT(W)
 arguments
+    % N_frames x M_frequencies 
     W (:,:)
 end
 % Get dimensions
-[M, N] = size(W);
+[~, M] = size(W);
 
 % Define discrete frequency domain
-f = (0:N-1)/N;
-% Get fft basis
-fft_basis = Complex(f, N);
-% Get inverse fft basis
-inverse_fft_basis = (1/N) * Conj(fft_basis).';
+f = (0:M-1);
+% Get fft basis, M_samples x M_frequencies
+fft_basis = Complex(f, M);
+% Get inverse fft basis, M_frequencies x M_samples
+inverse_fft_basis = (1/M) * Conj(fft_basis).';
 
 % Compute ISTFT
 istft = W * inverse_fft_basis;

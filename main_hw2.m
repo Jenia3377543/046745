@@ -86,3 +86,34 @@ plot(discrete_time_domain, y_n_f1_f5_rand);
 title('5 random frequencies in time domain');
 ylabel('Amplitude');
 xlabel('Time domain[sec]');
+%% Signal games
+% Signal Example 1
+% Filter the signal using threshold block in frequency domain
+% 
+% Let's take a look at signals with known frequency. We have choose the
+% frequencies s.t. they fall directly on discrete frequency bins, so there
+% is no energy spread in frequency domain and we can find the expected
+% energy at each frequency bin.
+% 
+% We will consider 
+% Drawbacks - must approximate the frequency exactly.
+M = 2048;
+freq_domain = Fs * (-M/2:M/2-1)/M;
+figure;
+imshow(imread('blocks2\HW2-Example1.png'));
+title('Example 1 block diagram');
+
+x_n1 = y_n_f1_f5(:, 1) + 1 * y_n_f1_f5(:, 3) + 0 * y_n_f1_f5(:, 5) + noise_n';
+W = STFT(x_n1, M);
+Wf = Threshold(abs(W), M/3);
+figure;
+plot(freq_domain, abs(fftshift(W(1, :))));
+
+xnr= ISTFT(Wf);
+figure; 
+plot(real(xnr));
+
+% imagesc(abs(fftshift(W, 2)));
+% Signal Example 2
+
+% Signal Example 3
