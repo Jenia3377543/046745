@@ -3,6 +3,7 @@ arguments
     f (1, :)
     N {mustBeInteger}
 end
-discrete_time_domain = (0:N-1)';
-y = exp(1j*2*pi*f.*discrete_time_domain);
+[sine_n, ~] = Sine(f,N,0);
+[cosine_n, ~] = Sine(f,N,pi/2);
+y = Add(cosine_n, Scalar(1j, sine_n));
 end

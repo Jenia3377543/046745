@@ -1,17 +1,14 @@
 clc; clear all; close all;
 %% Tools upgrade
 % We have created the Rand, Conj, Threshold, Complex, STFT and ISTFT blocks.
-% Also we have defined DFT basis block that uses Complex block in order to
-% define DFT projection matrix which can then used in STFT and ISTFT.
-
 blocks2 = struct2table(dir("blocks2"));
 blocks2 = blocks2(~ismember(blocks2.name, {'.', '..'}), :);
-block_names = split(blocks2.name, '.'); block_names = block_names(:, 1);
+block_names = split(blocks2.name, '.')
 blocks2_path = fullfile(blocks2.folder, blocks2.name);
 for i = 1:size(blocks2_path, 1)
     figure;
     imshow(imread(blocks2_path{i, :}));
-    title(compose("%s block diagram", string(block_names(i, :))))
+    title(compose("%s block diagram", string(blocks2(i, :).name)))
 end
 %% Section 3
 delta_time = 1;
