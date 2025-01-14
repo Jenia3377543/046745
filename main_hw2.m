@@ -95,7 +95,7 @@ xlabel('Time domain[sec]');
 % is no energy spread in frequency domain and we can find the expected
 % energy at each frequency bin. As we have seen in class, the energy in
 % frequency domain of pure sine\cosine equals to M/2 on each delta, so in order to filter out
-% WGN let choose th=$M/3$. As we can see, we have filtered out the noise.
+% WGN lets choose th=$M/3$. As we can see, we have filtered out the noise.
 % In the STFT we can see some noise in high frequncies and 4 deltas at
 % +-10[Hz] and +-50[Hz] as expected.
 
@@ -105,13 +105,24 @@ figure;
 imshow(imread('blocks2\HW2-Example1.png'));
 title('Example 1 block diagram');
 
+figure;
+imshow(imread('blocks2\Energy.png'));
+title('Energy block diagram');
+
+figure;
+imshow(imread('blocks2\HW2-Example1b.png'));
+title('Filtering proccess block diagram');
+
 x_n1 = Scalar(1.5, y_n_f1_f5(:, 1)) + Scalar(2, y_n_f1_f5(:, 5)) + noise_n';
 W = STFT(x_n1, M);
-Wf = Threshold(abs(W), M/3);
-xnr= ISTFT(Wf);
+
+[energy] = Energy(W);
+Wf = Threshold(energy, M/3);
+xnr = ISTFT(Wf);
 
 figure;
 nexttile;
+sgtitle({'Example #1', 'Filtering in frequency domain'})
 plot(discrete_time_domain, x_n1);
 title('Example #1, Signal in time domain');
 xlabel('Time domain [sec]');
@@ -149,7 +160,70 @@ title('STFT after denoising');
 xlabel('Frequncy domain [Hz]');
 ylabel('Window index');
 colorbar;
-% Signal Example 2 - Filtering in time domain
+
+%% Signal Example 2 - Filtering in time domain
+% Filtering out WGN noise in time domain using FIR filter.
+% The most simple LPF is moving average. We define the LPF coeeficients as
+% ones(1,10)/10, and apply as FIR filter using Filter function from HW1.
+% As we can see, there is some smooth in reconstructed signal, much less
+% distortion but signal is still noisy.
+
+figure;
+imshow(imread('blocks2\HW2-Example2a.png'));
+title('Example 2 block diagram');
 
 
-% Signal Example 3 - Filtering in frequency and time domain
+figure;
+imshow(imread('blocks2\HW2-Example2b.png'));
+title('Filtering proccess block diagram');
+
+x_n_2 = Scalar(3, y_n_f1_f5(:, 2)) + Scalar(2, y_n_f1_f5(:, 4)) + noise_n';
+LPF = ones(1, 10) / 10;
+y_n_2 = Filter(1, LPF, x_n_2); y_n_2 = buffer(y_n_2, N);
+
+W_x_2 = STFT(x_n_2, M);
+W_y_2 = STFT(y_n_2, M);
+
+
+figure;
+nexttile;
+sgtitle({'Example #2', 'Filtering in time domain'});
+plot(x_n_2, 'DisplayName', 'X_2[n]');
+title('X[n] in time domain');
+xlabel('Time domain [sec]');
+ylabel('Amplitude');
+
+nexttile;
+plot(y_n_2, 'DisplayName', 'Y_2[n]');
+title('Filtered X[n] in time domain');
+xlabel('Time domain [sec]');
+ylabel('Amplitude');
+
+nexttile;
+imagesc(abs(fftshift(W_x_2)));
+
+ticks_indices = 10:10:2048;
+
+xticks(ticks_indices);
+xticklabels(compose("%.2f", freq_domain(ticks_indices)));
+xlim(M/2 + 64 * [-1 1]);
+
+title('STFT');
+xlabel('Frequncy domain [Hz]');
+ylabel('Window index');
+colorbar;
+
+nexttile;
+imagesc(abs(fftshift(W_y_2)));
+
+ticks_indices = 10:10:2048;
+
+xticks(ticks_indices);
+xticklabels(compose("%.2f", freq_domain(ticks_indices)));
+xlim(M/2 + 64 * [-1 1]);
+
+title('STFT after time domain filtering (FIR)');
+xlabel('Frequncy domain [Hz]');
+ylabel('Window index');
+colorbar;
+%% Signal Example 3 - Filtering in frequency and time domain
