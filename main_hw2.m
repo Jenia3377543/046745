@@ -96,8 +96,9 @@ xlabel('Time domain[sec]');
 % energy at each frequency bin. As we have seen in class, the energy in
 % frequency domain of pure sine\cosine equals to M/2 on each delta, so in order to filter out
 % WGN lets choose th=$M/3$. As we can see, we have filtered out the noise.
-% In the STFT we can see some noise in high frequncies and 4 deltas at
-% +-10[Hz] and +-50[Hz] as expected.
+% In the STFT we can see 4 deltas at
+% +-10[Hz] and +-50[Hz] as expected and no noise at all because it was
+% filtered out completely.
 
 M = 2048;
 freq_domain = Fs * (-M/2:M/2-1)/M;
@@ -163,10 +164,16 @@ colorbar;
 
 %% Signal Example 2 - Filtering in time domain
 % Filtering out WGN noise in time domain using FIR filter.
-% The most simple LPF is moving average. We define the LPF coeeficients as
+% The most simple LPF is moving average. We define the LPF coefficients as
 % ones(1,10)/10, and apply as FIR filter using Filter function from HW1.
+% The intuition is that averaging samples gives us value that is less or
+% equal to maximum and max or equal to minimum, so as a result, fast changes will be
+% smoothed.
 % As we can see, there is some smooth in reconstructed signal, much less
-% distortion but signal is still noisy.
+% distortion but signal is still noisy. In STFT we see that there is less
+% energy in higher frequencies, because some parts of WGN was filtered out.
+% As expected, both in initial and filtered signal we can see 4 deltas
+% +-20[Hz] and +-40[Hz].
 
 figure;
 imshow(imread('blocks2\HW2-Example2a.png'));
