@@ -100,7 +100,7 @@ xlabel('Time domain[sec]');
 % +-10[Hz] and +-50[Hz] as expected and no noise at all because it was
 % filtered out completely.
 
-M = 2048;
+M = 512;
 freq_domain = Fs * (-M/2:M/2-1)/M;
 figure;
 imshow(imread('blocks2\HW2-Example1.png'));
