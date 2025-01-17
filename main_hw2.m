@@ -2,26 +2,55 @@ clc; clear all; close all;
 %% Tools upgrade
 % We have created the Rand, Conj, Threshold, Complex, STFT and ISTFT blocks.
 % We implemented STFT\ISTFT as polyphase filters (decimation and then
-% filtering with "DFT" filter, was defined using Complex block).
+% filtering with "DFT" filter, which is defined using Complex block). Then
+% the it is applied using Filter block (the filter block also flips the
+% filter coefficients, so before that we flip the filter using conj block).
 % 
 % The STFT\ISTFT was divided into multiple steps (smaller blocks):
 % 
 % * H_i_k  - defines DFT polyphase filter for delay i and frequency k
 % * STFT_k - computes STFT for frequency k
 % 
-% so then we call these blocks to fill the STFT\ISTFT matrix.
+% so then we call these blocks to fill the STFT\ISTFT matrices.
 % Using this implementation there is no redundant multiplications and its
 % memory efficient.
 
-blocks2 = struct2table(dir("blocks2"));
-blocks2 = blocks2(~ismember(blocks2.name, {'.', '..'}), :);
-block_names = split(blocks2.name, '.'); block_names = block_names(:, 1);
-blocks2_path = fullfile(blocks2.folder, blocks2.name);
-for i = 1:size(blocks2_path, 1)
-    figure;
-    imshow(imread(blocks2_path{i, :}));
-    title(compose("%s block diagram", string(block_names(i, :))));
-end
+figure;
+imshow(imread("blocks2\Rand.png"));
+title("Rand block diagram");
+
+figure;
+imshow(imread("blocks2\Conj.png"));
+title("Conj block diagram");
+
+figure;
+imshow(imread("blocks2\Threshold.png"));
+title("Threshold block diagram");
+
+figure;
+imshow(imread("blocks2\Complex.png"));
+title("Complex block diagram");
+
+
+figure;
+imshow(imread("blocks2\DFT-polyphase-filter.png"));
+title("DFT-polyphase-filter block diagram");
+
+figure;
+imshow(imread("blocks2\STFT-k.png"));
+title("STFT-k block diagram");
+
+figure;
+imshow(imread("blocks2\STFT.png"));
+title("STFT block diagram");
+
+figure;
+imshow(imread("blocks2\ISTFT-k.png"));
+title("ISTFT-k block diagram");
+
+figure;
+imshow(imread("blocks2\ISTFT.png"));
+title("ISTFT block diagram");
 %% Section 3
 delta_time = 1;
 N = 4096;
@@ -104,7 +133,7 @@ xlabel('Time domain[sec]');
 % is no energy spread in frequency domain and we can find the expected
 % energy at each frequency bin. As we have seen in class, the energy in
 % frequency domain of pure sine\cosine equals to M/2 on each delta, so in order to filter out
-% WGN lets choose th=$M/3$. As we can see, we have filtered out the noise.
+% WGN lets choose th=$M/2$. As we can see, we have filtered out the noise.
 % In the STFT we can see 4 deltas at
 % +-16[Hz] and +-80[Hz] as expected and no noise at all because it was
 % filtered out completely.
