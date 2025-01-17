@@ -3,6 +3,5 @@ arguments
     x 
     th 
 end
-y = x;
-y(y < th) = 0;
+y = x >= th;
 end

@@ -8,16 +8,15 @@ end
 y = zeros(numel(W), 1);
 
 for ik = 0:M-1
-    basis_vec = Complex(ik, M)/M;
+    basis_vec = Conj(Complex(ik, M));
 
     for jf = 0:M-1
         w_k = W(:, jf+1);
        
         hj_filter = PolyphaseFilter(basis_vec, jf, M);
-        y_decimated = Filter(1, hj_filter, w_k);
-
-        y_interpolated = Interpolate(M, y_decimated)';
-        y(ik+1:end) = Add(y(ik+1:end), y_interpolated(1:end-ik));
+        res = Filter(1, hj_filter, w_k);
+        res2 = Interpolate(M, res);
+        y(ik+1:end) = Add(y(ik+1:end), res2(1:end));
     end
 end
 end

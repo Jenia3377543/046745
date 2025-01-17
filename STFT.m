@@ -7,26 +7,16 @@ N_samples = length(x);
 N         = round(N_samples/M);
 W         = zeros(N, M);
 
-SHIFT = @(x) buffer(Filter(1, [1 0], x), N_samples);
 for ik = 0:M-1
-    basis_vec = Complex(ik, M);
-    tmp = x;
-    for in = 1:M-1
-        x_decimated = Decimate(M, tmp);
-        curr_prod = Scalar(basis_vec(in), x_decimated);
-        W(:, ik+1) = Add(W(:, ik+1), curr_prod);
-        tmp = SHIFT(tmp');
+    basis_vec = Conj(Complex(ik, M));
+    for jf = 0:M-1
+        x_delayed = Delay(x, jf);
+        xj_delayed = Decimate(M, x_delayed);
+
+        hj_filter = PolyphaseFilter(basis_vec, jf, M);
+        wj = Filter(1, hj_filter, xj_delayed);
+        
+        W(:, ik+1) = Add(W(:, ik+1), wj);
     end
 end
-% % M x N_frames
-% x_windowed = reshape(x, M, []);
-% 
-% % Define discrete frequency domain
-% f = (0:M-1);
-% 
-% % Get fft basis, M_samples x M_frequencies
-% fft_basis = Complex(f, M);
-% 
-% % Compute DFT for each window
-% W = x_windowed.' * fft_basis;
 end

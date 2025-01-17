@@ -3,8 +3,7 @@ clc; clear all; close all;
 % We have created the Rand, Conj, Threshold, Complex, STFT and ISTFT blocks.
 % We implemented STFT\ISTFT as polyphase filters (decimation and then
 % filtering with "DFT" filter, was defined using Complex block).
-% 
-% The STFT\ISTFT was divided into multiple steps (smaller blocks):
+% The STFT\ISTFT was divided into smaller blocks:
 % 
 % * H_i_k  - defines DFT polyphase filter for delay i and frequency k
 % * STFT_k - computes STFT for frequency k
@@ -73,7 +72,7 @@ title(compose('High passed WGN, F_c=%.2f[Hz]', Fc));
 %% Known 5 frequencies
 % Define 5 known frequencies and create sinusoidal signal using Sine func
 % from HW1.
-f1_5 = (16:16:90)';
+f1_5 = (10:10:50)';
 [y_n_f1_f5, discrete_time_domain] = Sine(f1_5,N,0);
 
 figure;
@@ -106,13 +105,13 @@ xlabel('Time domain[sec]');
 % frequency domain of pure sine\cosine equals to M/2 on each delta, so in order to filter out
 % WGN lets choose th=$M/3$. As we can see, we have filtered out the noise.
 % In the STFT we can see 4 deltas at
-% +-16[Hz] and +-80[Hz] as expected and no noise at all because it was
+% +-10[Hz] and +-50[Hz] as expected and no noise at all because it was
 % filtered out completely.
 
-M = 512;
+M = 128;
 freq_domain = Fs * (-M/2:M/2-1)/M;
 figure;
-imshow(imread('example2\HW2-Example1a.png'));
+imshow(imread('blocks2\HW2-Example1.png'));
 title('Example 1 block diagram');
 
 figure;
@@ -120,14 +119,14 @@ imshow(imread('blocks2\Energy.png'));
 title('Energy block diagram');
 
 figure;
-imshow(imread('example2\HW2-Example1b.png'));
+imshow(imread('blocks2\HW2-Example1b.png'));
 title('Filtering proccess block diagram');
 
 x_n1 = Scalar(1.5, y_n_f1_f5(:, 1)) + Scalar(2, y_n_f1_f5(:, 5)) + noise_n';
 W = STFT(x_n1, M);
 
 [energy] = Energy(W);
-Wf = W .* Threshold(energy, M/2);
+Wf = W(Threshold(energy, M/3));
 xnr = ISTFT(Wf);
 
 figure;
@@ -141,7 +140,7 @@ ylabel('Amplitude');
 nexttile;
 imagesc(abs(fftshift(W)));
 
-ticks_indices = 10:10:M;
+ticks_indices = 10:10:2048;
 
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
@@ -160,7 +159,7 @@ ylabel('Amplitude');
 
 nexttile;
 imagesc(abs(fftshift(Wf)));
-ticks_indices = 10:10:M;
+ticks_indices = 10:10:2048;
 
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
@@ -182,15 +181,15 @@ colorbar;
 % distortion but signal is still noisy. In STFT we see that there is less
 % energy in higher frequencies, because some parts of WGN was filtered out.
 % As expected, both in initial and filtered signal we can see 4 deltas
-% +-32[Hz] and +-64[Hz].
+% +-20[Hz] and +-40[Hz].
 
 figure;
-imshow(imread('example2\HW2-Example2a.png'));
+imshow(imread('blocks2\HW2-Example2a.png'));
 title('Example 2 block diagram');
 
 
 figure;
-imshow(imread('example2\HW2-Example2b.png'));
+imshow(imread('blocks2\HW2-Example2b.png'));
 title('Filtering proccess block diagram');
 
 x_n_2 = Scalar(3, y_n_f1_f5(:, 2)) + Scalar(2, y_n_f1_f5(:, 4)) + noise_n';
@@ -218,7 +217,7 @@ ylabel('Amplitude');
 nexttile;
 imagesc(abs(fftshift(W_x_2)));
 
-ticks_indices = 10:10:M;
+ticks_indices = 10:10:2048;
 
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
@@ -232,7 +231,7 @@ colorbar;
 nexttile;
 imagesc(abs(fftshift(W_y_2)));
 
-ticks_indices = 10:10:M;
+ticks_indices = 10:10:2048;
 
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
