@@ -113,11 +113,11 @@ ylabel('Amplitude');
 xlabel('Time domain[sec]');
 %% Random 5 frequencies
 % We sample 5 random frequencies using Rand block, scale them to [0, 50]
-% Offset to [50, 100] using Add block from HW1
+% Offset to [30, 60] using Add block from HW1
 % And create sinusoidal signal using Sine block.
 f1_5_rand = Rand(5);
-f1_5_rand = Scalar(50, f1_5_rand);
-f1_5_rand = Add(50, f1_5_rand);
+f1_5_rand = Scalar(30, f1_5_rand);
+f1_5_rand = Add(30, f1_5_rand);
 [y_n_f1_f5_rand, discrete_time_domain] = Sine(f1_5_rand,N,0);
 
 figure;
@@ -305,7 +305,6 @@ Wf3 = Prod(STFT_y_3_filtered, Threshold(energy3, M/2));
 y_n_3_time_filtered_TF_domain = ISTFT(Wf3);
 %%
 figure('Position', [0 0 900 600]);
-% figure;
 nexttile;
 sgtitle({'Example #3', 'Filtering in time and frequency domain'});
 plot(x_n_3_clean);
