@@ -9,14 +9,16 @@ W         = zeros(N, M);
 
 for ik = 0:M-1
     basis_vec = Conj(Complex(ik, M));
+
+    x_delayed = x;
     for jf = 0:M-1
-        x_delayed = Delay(x, jf);
         xj_delayed = Decimate(M, x_delayed);
 
-        hj_filter = PolyphaseFilter(basis_vec, jf, M);
-        wj = Filter(1, hj_filter, xj_delayed);
+        hj_filter = basis_vec(jf+1);
+        wj = Scalar(hj_filter, xj_delayed);
         
         W(:, ik+1) = Add(W(:, ik+1), wj);
+        x_delayed = Delay(x_delayed, 1);
     end
 end
 end

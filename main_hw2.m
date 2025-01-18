@@ -1,21 +1,22 @@
 clc; clear all; close all;
+addpath(genpath('.\PlotUtils2'));
 %% Tools upgrade
 % We have created the Rand, Conj, Threshold, Complex, STFT and ISTFT blocks.
 % We implemented STFT\ISTFT as polyphase filters (decimation\interpolation and
 % filtering with "DFT" filter, which is defined using Complex block). 
-% The it is applied using Filter block (the filter block also flips the
-% filter coefficients, so before that we flip the filter using conj block).
+% Since the polyphase filters in this case is scalars so we apply them
+% using Scalar block.
 % 
 % The STFT\ISTFT was divided into multiple steps (smaller blocks):
 % 
-% * H_i_k  - defines DFT polyphase filter for delay i and frequency k
+% * Getting i element from DFT signal for k frequency - polyphase filter for delay i and frequency k
 % * STFT_k - computes STFT for frequency k
 % 
 % so then we call these blocks to fill the STFT\ISTFT matrices.
 % The ISTFT was implemented using polyphase filters and Interpolation block
 % from HW1. In addition we have defined Circshift which was applied after
-% the interpolation in order align samples in time domain to between the
-% frames. Using this implementation there is no redundant multiplications and its
+% the interpolation in order tp align samples in the time domain for each
+% frame. Using this implementation there is no redundant multiplications and its
 % memory efficient.
 fontSize = 20;
 
@@ -35,14 +36,13 @@ figure;
 imshow(imread("blocks2\Complex.png"));
 title("Complex block diagram", 'FontSize', fontSize);
 
-
-figure;
-imshow(imread("blocks2\DFT-polyphase-filter.png"));
-title("DFT-polyphase-filter block diagram", 'FontSize', fontSize);
-
 figure;
 imshow(imread("blocks2\Circshift.png"));
 title("Circshift block diagram", 'FontSize', fontSize);
+
+figure;
+imshow(imread("blocks2\Mag2db.png"));
+title("Mag2db block diagram", 'FontSize', fontSize);
 
 figure;
 imshow(imread("blocks2\STFT-k.png"));
@@ -114,12 +114,13 @@ f1_5 = (16:16:90)';
 [y_n_f1_f5, discrete_time_domain] = Sine(f1_5,N,0);
 
 figure;
-plot(discrete_time_domain, y_n_f1_f5);
+plot(discrete_time_domain(1:256), y_n_f1_f5(1:256, :));
+legend(compose("%.2f [Hz]", f1_5));
 title('5 known frequencies in time domain');
 ylabel('Amplitude');
 xlabel('Time domain[sec]');
 %% Random 5 frequencies
-% We sample 5 random frequencies using Rand block, scale them to [0, 50]
+% We sample 5 random frequencies using Rand block, scale them to [0, 30]
 % Offset to [30, 60] using Add block from HW1
 % And create sinusoidal signal using Sine block.
 f1_5_rand = Rand(5);
@@ -128,7 +129,8 @@ f1_5_rand = Add(30, f1_5_rand);
 [y_n_f1_f5_rand, discrete_time_domain] = Sine(f1_5_rand,N,0);
 
 figure;
-plot(discrete_time_domain, y_n_f1_f5_rand);
+plot(discrete_time_domain(1:256), y_n_f1_f5_rand(1:256, :));
+legend(compose("%.2f [Hz]", f1_5_rand));
 title('5 random frequencies in time domain');
 ylabel('Amplitude');
 xlabel('Time domain[sec]');
@@ -179,7 +181,7 @@ xlabel('Time domain [sec]');
 ylabel('Amplitude');
 
 nexttile;
-imagesc(abs(fftshift(W)));
+imagesc(Mag2db(abs(fftshift(W))));
 
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
@@ -188,7 +190,7 @@ xlim(M/2 + 64 * [-1 1]);
 title('STFT');
 xlabel('Frequncy domain [Hz]');
 ylabel('Window index');
-colorbar;
+colorbar2();
 
 nexttile;
 plot(discrete_time_domain, real(xnr));
@@ -197,7 +199,7 @@ xlabel('Time domain [sec]');
 ylabel('Amplitude');
 
 nexttile;
-imagesc(abs(fftshift(Wf)));
+imagesc(Mag2db(abs(fftshift(Wf))));
 
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
@@ -206,7 +208,7 @@ xlim(M/2 + 64 * [-1 1]);
 title('STFT after denoising');
 xlabel('Frequncy domain [Hz]');
 ylabel('Window index');
-colorbar;
+colorbar2();
 
 %% Signal Example 2 - Filtering in time domain
 % The simplest low-pass filter is a moving average filter. 
@@ -256,7 +258,7 @@ xlabel('Time domain [sec]');
 ylabel('Amplitude');
 
 nexttile;
-imagesc(abs(fftshift(W_x_2)));
+imagesc(Mag2db(abs(fftshift(W_x_2))));
 
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
@@ -265,10 +267,10 @@ xlim(M/2 + 64 * [-1 1]);
 title('STFT');
 xlabel('Frequncy domain [Hz]');
 ylabel('Window index');
-colorbar;
+colorbar2();
 
 nexttile;
-imagesc(abs(fftshift(W_y_2)));
+imagesc(Mag2db(abs(fftshift(W_y_2))));
 
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
@@ -277,7 +279,7 @@ xlim(M/2 + 64 * [-1 1]);
 title('STFT after time domain filtering (FIR)');
 xlabel('Frequncy domain [Hz]');
 ylabel('Window index');
-colorbar;
+colorbar2();
 %% Signal Example 3 - Filtering in frequency and time domain
 % In this example, we will filter a signal composed of an amplified high-pass filtered 
 % white Gaussian noise combined with two random sinusoidal signals, amplified 
@@ -326,7 +328,7 @@ xlabel('Time domain[samples]');
 ylabel('Amplitude');
 
 nexttile;
-imagesc(fftshift(abs(STFT_y_3)));
+imagesc(Mag2db(fftshift(abs(STFT_y_3))));
 title('STFT - Input signal');
 xlabel('Freq domain[Hz]');
 ylabel('Time domain');
@@ -334,24 +336,27 @@ ylabel('Time domain');
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
 xlim(M/2 + 128 * [-1 1]);
+colorbar2();
 
 nexttile;
-imagesc(fftshift(abs(STFT_y_3_filtered)));
+imagesc(Mag2db(fftshift(abs(STFT_y_3_filtered))));
 title({'STFT', 'Filtering in time domain'});
 xlabel('Freq domain[Hz]');
 ylabel('Time domain');
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
 xlim(M/2 + 64 * [-1 1]);
+colorbar2();
 
 nexttile;
-imagesc(fftshift(abs(Wf3)));
+imagesc(Mag2db(fftshift(abs(Wf3))));
 title({'STFT', 'Filtering in time and frequency domain'});
 xlabel('Freq domain[Hz]');
 ylabel('Time domain');
 xticks(ticks_indices);
 xticklabels(compose("%.2f", freq_domain(ticks_indices)));
 xlim(M/2 + 64 * [-1 1]);
+colorbar2();
 
 nexttile;
 plot(real(y_n_3_time_filtered_TF_domain));
