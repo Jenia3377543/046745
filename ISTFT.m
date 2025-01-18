@@ -17,7 +17,7 @@ for ik = 0:M-1
         y_decimated = Filter(1, hj_filter, w_k);
 
         y_interpolated = Interpolate(M, y_decimated)';
-        y(ik+1:end) = Add(y(ik+1:end), y_interpolated(1:end-ik));
+        y = Add(y, Circshift(y_interpolated, ik));
     end
 end
 end

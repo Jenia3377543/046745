@@ -1,9 +1,9 @@
 clc; clear all; close all;
 %% Tools upgrade
 % We have created the Rand, Conj, Threshold, Complex, STFT and ISTFT blocks.
-% We implemented STFT\ISTFT as polyphase filters (decimation and then
-% filtering with "DFT" filter, which is defined using Complex block). Then
-% the it is applied using Filter block (the filter block also flips the
+% We implemented STFT\ISTFT as polyphase filters (decimation\interpolation and
+% filtering with "DFT" filter, which is defined using Complex block). 
+% The it is applied using Filter block (the filter block also flips the
 % filter coefficients, so before that we flip the filter using conj block).
 % 
 % The STFT\ISTFT was divided into multiple steps (smaller blocks):
@@ -12,7 +12,10 @@ clc; clear all; close all;
 % * STFT_k - computes STFT for frequency k
 % 
 % so then we call these blocks to fill the STFT\ISTFT matrices.
-% Using this implementation there is no redundant multiplications and its
+% The ISTFT was implemented using polyphase filters and Interpolation block
+% from HW1. In addition we have defined Circshift which was applied after
+% the interpolation in order align samples in time domain to between the
+% frames. Using this implementation there is no redundant multiplications and its
 % memory efficient.
 fontSize = 20;
 
@@ -36,6 +39,10 @@ title("Complex block diagram", 'FontSize', fontSize);
 figure;
 imshow(imread("blocks2\DFT-polyphase-filter.png"));
 title("DFT-polyphase-filter block diagram", 'FontSize', fontSize);
+
+figure;
+imshow(imread("blocks2\Circshift.png"));
+title("Circshift block diagram", 'FontSize', fontSize);
 
 figure;
 imshow(imread("blocks2\STFT-k.png"));
