@@ -3,9 +3,9 @@ arguments
     x 
     y 
 end
-vals_diff = Add(x, Scalar(-1, y));
+vals_diff = Add(x, Prod(-1, y));
 x_gt = Threshold(vals_diff, 0);
-y_gt = Add(1, Scalar(-1, x_gt));
+y_gt = Add(1, Prod(-1, x_gt));
 
-z = Add(Scalar(x_gt, x), Scalar(y_gt, y));
+z = Add(Prod(x_gt, x), Prod(y_gt, y));
 end

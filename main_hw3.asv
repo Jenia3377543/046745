@@ -84,8 +84,8 @@ figure;
 imshow(imread('blocks3\GreaterThan.png'));
 title("GreaterThan block diagram", 'FontSize', fontSize);
 
-[zers, ~] = Sine(0, N, 0);
-[z] = GreaterThan(y, zers.');
+[zers, ~] = Sine(N, 0, 0);
+[z] = GreaterThan(y, zers);
 figure; nexttile;
 plot(y, '--*');
 title('Y signal');
