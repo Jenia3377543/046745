@@ -3,7 +3,7 @@ arguments
     N
     % Parameters for gaussian center
     m_mu    = 512
-    sigma_m = 2048
+    sigma_m = 
 
     % Parameter for gaussian scale
     s_mu    = 128
@@ -17,7 +17,7 @@ a = Add(a, -2);
 % Sample random sines frequencies
 f = Rand(5);
 f = Scalar(100, f);
-f = Add(f, 50);
+f = Add(f, -50);
 
 % Define base sine signals
 [s_n1, ~] = Sine(f(1),N);
