@@ -11,7 +11,8 @@ title("DigitalRandom block diagram", 'FontSize', fontSize);
 
 figure;
 [x] = DigitalRandom(N);
-plot(x, '--*');
+stem(x, '--.');
+xlim([0,32]);
 title('Example for DigitalRandom block');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
@@ -25,14 +26,14 @@ figure;
 nexttile;
 sgtitle('Example for NaturalRandom block');
 
-plot(y_15.', '--*');
+plot(y_15.', '--.');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
 legend(compose('Signal #%d', 1:size(y_15, 1)));
 title('Signals');
 
 nexttile;
-plot(y, '--*');
+plot(y, '--.');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
 title('Sum of signals');
@@ -46,19 +47,25 @@ figure;
 nexttile;
 sgtitle('Example for MuxRandom block');
 
-plot(x, '--*');
+stem(x);
+xlim([0,32]);
 title('X signal');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
 
 nexttile;
-plot(y, '--*');
+plot(y, '--.');
 title('Y signal');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
 
 nexttile;
-plot(z, '--*');
+if b == 1
+    stem(z);
+    xlim([0,32]);
+else
+    plot(z, '--.');
+end
 title(compose('Z signal, b=%d', b));
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
@@ -71,11 +78,15 @@ figure;
 [x,c] = SignalRandom(N);
 nexttile;
 sgtitle({'Example for SignalRandom block', compose("c=%d", c)});
-
-plot(x, '--*');
+if c == 0
+    stem(x);
+    xlim([0, 32]);
+else
+    plot(x, '--.');
+end
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
-
+%% GreaterThan block
 % As Example for GreaterThan block, we select 2 signals - Natural signal
 % from Natural signal block and signal of zeros (Using Sine block with DC
 % frequency). We expect that applying GreaterThan block will return only
@@ -87,13 +98,13 @@ title("GreaterThan block diagram", 'FontSize', fontSize);
 [zers, ~] = Sine(0, N, 0);
 [z] = GreaterThan(y, zers.');
 figure; nexttile;
-plot(y, '--*');
+plot(y, '--.');
 title('Y signal');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
 
 nexttile;
-plot(z, '--*');
+plot(z, '--.');
 title('Z signal');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
@@ -111,10 +122,11 @@ ylabel('Amplitude');
 % filter which is defined as $ones(1,N)/N$ where N is the input signal
 % length. The logic is opposite to the desired threshold defined in the
 % question (c >= 0.5 -> natural otherwise digital), so if we look at $1 -
-% DC_energy$ we get the desired logic. 
+% DC_{energy}$ we get the desired logic.
+
 % P.S the DC energy is noisy (because of the WGN noise, the variance 
-% of DC_energy estimation is equal to $\sigma^2/N$), so instead of $c=1-DC_energy$ we define it as
-% $c=a-DC_energy$ where $0<a<1$, we used $a=0.95$ which achieves 100%
+% of $DC_{energy}$ estimation is equal to $\sigma^2/N$), so instead of $c=1-DC_{energy}$ we define it as
+% $c=a-DC_{energy}$ where $0<a<1$, we used $a=0.95$ which achieves 100%
 % accuracy.
 
 figure;

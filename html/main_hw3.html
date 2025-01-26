@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>main_hw3</title>
+<meta name="generator" content="MATLAB 24.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2025-01-26">
+<meta name="DC.source" content="main_hw3.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#2">Section (A) - Adding new utils</a>
+</li>
+<li>
+<a href="#3">Section (B) - Implementing BinaryClassifier</a>
+</li>
+<li>
+<a href="#4">Section (C)</a>
+</li>
+</ul>
+</div>
+<pre class="codeinput">clear <span class="string">all</span>; clc; close <span class="string">all</span>;
+</pre>
+<h2 id="2">Section (A) - Adding new utils</h2>
+<p>We have implemented new utils using blocks from previous homeworks. Here are the diagram blocks and examples:</p>
+<pre class="codeinput">fontSize = 20;
+N = 4096;
+
+figure;
+imshow(imread(<span class="string">'blocks3\DigitalRandom.png'</span>));
+title(<span class="string">"DigitalRandom block diagram"</span>, <span class="string">'FontSize'</span>, fontSize);
+
+figure;
+[x] = DigitalRandom(N);
+plot(x, <span class="string">'--*'</span>);
+title(<span class="string">'Example for DigitalRandom block'</span>);
+xlabel(<span class="string">'Time domain [samples]'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+figure;
+imshow(imread(<span class="string">'blocks3\NaturalRandom.png'</span>));
+title(<span class="string">"NaturalRandom block diagram"</span>, <span class="string">'FontSize'</span>, fontSize);
+
+[y, y_15] = NaturalRandom(N);
+figure;
+nexttile;
+sgtitle(<span class="string">'Example for NaturalRandom block'</span>);
+
+plot(y_15.', <span class="string">'--*'</span>);
+xlabel(<span class="string">'Time domain [samples]'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+legend(compose(<span class="string">'Signal #%d'</span>, 1:size(y_15, 1)));
+title(<span class="string">'Signals'</span>);
+
+nexttile;
+plot(y, <span class="string">'--*'</span>);
+xlabel(<span class="string">'Time domain [samples]'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+title(<span class="string">'Sum of signals'</span>);
+
+figure;
+imshow(imread(<span class="string">'blocks3\MuxRandom.png'</span>));
+title(<span class="string">"MuxRandom block diagram"</span>, <span class="string">'FontSize'</span>, fontSize);
+
+figure;
+[z,b] = MuxRandom(x,y);
+nexttile;
+sgtitle(<span class="string">'Example for MuxRandom block'</span>);
+
+plot(x, <span class="string">'--*'</span>);
+title(<span class="string">'X signal'</span>);
+xlabel(<span class="string">'Time domain [samples]'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+nexttile;
+plot(y, <span class="string">'--*'</span>);
+title(<span class="string">'Y signal'</span>);
+xlabel(<span class="string">'Time domain [samples]'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+nexttile;
+plot(z, <span class="string">'--*'</span>);
+title(compose(<span class="string">'Z signal, b=%d'</span>, b));
+xlabel(<span class="string">'Time domain [samples]'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+figure;
+imshow(imread(<span class="string">'blocks3\SignalRandom.png'</span>));
+title(<span class="string">"SignalRandom block diagram"</span>, <span class="string">'FontSize'</span>, fontSize);
+
+figure;
+[x,c] = SignalRandom(N);
+nexttile;
+sgtitle({<span class="string">'Example for SignalRandom block'</span>, compose(<span class="string">"c=%d"</span>, c)});
+
+plot(x, <span class="string">'--*'</span>);
+xlabel(<span class="string">'Time domain [samples]'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+<span class="comment">% As Example for GreaterThan block, we select 2 signals - Natural signal</span>
+<span class="comment">% from Natural signal block and signal of zeros (Using Sine block with DC</span>
+<span class="comment">% frequency). We expect that applying GreaterThan block will return only</span>
+<span class="comment">% politive values, the negative one will be replaced with zeros.</span>
+figure;
+imshow(imread(<span class="string">'blocks3\GreaterThan.png'</span>));
+title(<span class="string">"GreaterThan block diagram"</span>, <span class="string">'FontSize'</span>, fontSize);
+
+[zers, ~] = Sine(0, N, 0);
+[z] = GreaterThan(y, zers.');
+figure; nexttile;
+plot(y, <span class="string">'--*'</span>);
+title(<span class="string">'Y signal'</span>);
+xlabel(<span class="string">'Time domain [samples]'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+nexttile;
+plot(z, <span class="string">'--*'</span>);
+title(<span class="string">'Z signal'</span>);
+xlabel(<span class="string">'Time domain [samples]'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+</pre>
+<img vspace="5" hspace="5" src="main_hw3_01.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_02.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_03.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_04.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_05.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_06.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_07.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_08.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_09.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_10.png" alt=""> <h2 id="3">Section (B) - Implementing BinaryClassifier</h2>
+<p>As we can see, the goal is to classify two types of signals: digital and natural. Each type of signal has distinct characteristics, some of which can be helpful in the classification process. One key difference between these signal types is that digital signals contain a DC frequency component, whereas natural signals do not. The DC energy tends to the mean of the digital symbols which equals to 0.5. For the natural signals there is no DC because we choose the sine frequency and gaussian s.t. the mean over time equals to zero (like wavelets). Considering the constraints above, we offer the following classificator - if the signals DC energy is above 0.5 - it's of digital type otherwise it's natural. The mean of the signal can be approximated using Filter function with FIR filter which is defined as <img src="main_hw3_eq03720133834565466505.png" alt="$ones(1,N)/N$"> where N is the input signal length. The logic is opposite to the desired threshold defined in the question (c &gt;= 0.5 -&gt; natural otherwise digital), so if we look at <img src="main_hw3_eq10277030821125680877.png" alt="$1 - DC_energy$"> we get the desired logic. P.S the DC energy is noisy (because of the WGN noise, the variance of DC_energy estimation is equal to <img src="main_hw3_eq12662098722898484428.png" alt="$\sigma^2/N$">), so instead of <img src="main_hw3_eq06066554659236034914.png" alt="$c=1-DC_energy$"> we define it as <img src="main_hw3_eq15127200570979126730.png" alt="$c=a-DC_energy$"> where <img src="main_hw3_eq15290478093240936105.png" alt="$0<a<1$">, we used <img src="main_hw3_eq06501960805979905040.png" alt="$a=0.95$"> which achieves 100% accuracy.</p>
+<pre class="codeinput">figure;
+imshow(imread(<span class="string">'blocks3\BinaryClassifier.png'</span>));
+title(<span class="string">"BinaryClassifier block diagram"</span>, <span class="string">'FontSize'</span>, fontSize);
+</pre>
+<img vspace="5" hspace="5" src="main_hw3_11.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_12.png" alt=""> <h2 id="4">Section (C)</h2>
+<pre class="codeinput">N = 4096;
+
+is_natural  = false(30, 1);
+predictions = zeros(30, 1);
+<span class="keyword">for</span> i = 1:10
+    [x, is_natural(i)] = SignalRandom(N);
+    n1 = WGN(N, 0, 0.1);
+    x_noised = Add(x, n1);
+    predictions(i) = BinaryClassifier(x_noised);
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> i = 11:20
+    [x, is_natural(i)] = SignalRandom(N);
+    n2 = WGN(N, 0, 0.5);
+    x_noised = Add(x, n2);
+    predictions(i) = BinaryClassifier(x_noised);
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> i = 21:30
+    [x, is_natural(i)] = SignalRandom(N);
+    predictions(i) = BinaryClassifier(x);
+<span class="keyword">end</span>
+
+signal_label = categorical([<span class="string">"digital"</span>, <span class="string">"natural"</span>]);
+
+figure;
+gscatter(1:30, predictions, signal_label(is_natural+1), <span class="string">"br"</span>);
+title(<span class="string">'Binary Classifier results'</span>);
+xlabel(<span class="string">'Signal index'</span>);
+ylabel(<span class="string">'c (Prediction Score)'</span>);
+</pre>
+<img vspace="5" hspace="5" src="main_hw3_13.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_14.png" alt=""> <p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2024b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+clear all; clc; close all;
+%% Section (A) - Adding new utils
+% We have implemented new utils using blocks from previous homeworks.
+% Here are the diagram blocks and examples:
+fontSize = 20;
+N = 4096;
+
+figure;
+imshow(imread('blocks3\DigitalRandom.png'));
+title("DigitalRandom block diagram", 'FontSize', fontSize);
+
+figure;
+[x] = DigitalRandom(N);
+plot(x, 'REPLACE_WITH_DASH_DASH*');
+title('Example for DigitalRandom block');
+xlabel('Time domain [samples]');
+ylabel('Amplitude');
+
+figure;
+imshow(imread('blocks3\NaturalRandom.png'));
+title("NaturalRandom block diagram", 'FontSize', fontSize);
+
+[y, y_15] = NaturalRandom(N);
+figure; 
+nexttile;
+sgtitle('Example for NaturalRandom block');
+
+plot(y_15.', 'REPLACE_WITH_DASH_DASH*');
+xlabel('Time domain [samples]');
+ylabel('Amplitude');
+legend(compose('Signal #%d', 1:size(y_15, 1)));
+title('Signals');
+
+nexttile;
+plot(y, 'REPLACE_WITH_DASH_DASH*');
+xlabel('Time domain [samples]');
+ylabel('Amplitude');
+title('Sum of signals');
+
+figure;
+imshow(imread('blocks3\MuxRandom.png'));
+title("MuxRandom block diagram", 'FontSize', fontSize);
+
+figure;
+[z,b] = MuxRandom(x,y);
+nexttile;
+sgtitle('Example for MuxRandom block');
+
+plot(x, 'REPLACE_WITH_DASH_DASH*');
+title('X signal');
+xlabel('Time domain [samples]');
+ylabel('Amplitude');
+
+nexttile;
+plot(y, 'REPLACE_WITH_DASH_DASH*');
+title('Y signal');
+xlabel('Time domain [samples]');
+ylabel('Amplitude');
+
+nexttile;
+plot(z, 'REPLACE_WITH_DASH_DASH*');
+title(compose('Z signal, b=%d', b));
+xlabel('Time domain [samples]');
+ylabel('Amplitude');
+
+figure;
+imshow(imread('blocks3\SignalRandom.png'));
+title("SignalRandom block diagram", 'FontSize', fontSize);
+
+figure;
+[x,c] = SignalRandom(N);
+nexttile;
+sgtitle({'Example for SignalRandom block', compose("c=%d", c)});
+
+plot(x, 'REPLACE_WITH_DASH_DASH*');
+xlabel('Time domain [samples]');
+ylabel('Amplitude');
+
+% As Example for GreaterThan block, we select 2 signals - Natural signal
+% from Natural signal block and signal of zeros (Using Sine block with DC
+% frequency). We expect that applying GreaterThan block will return only
+% politive values, the negative one will be replaced with zeros.
+figure;
+imshow(imread('blocks3\GreaterThan.png'));
+title("GreaterThan block diagram", 'FontSize', fontSize);
+
+[zers, ~] = Sine(0, N, 0);
+[z] = GreaterThan(y, zers.');
+figure; nexttile;
+plot(y, 'REPLACE_WITH_DASH_DASH*');
+title('Y signal');
+xlabel('Time domain [samples]');
+ylabel('Amplitude');
+
+nexttile;
+plot(z, 'REPLACE_WITH_DASH_DASH*');
+title('Z signal');
+xlabel('Time domain [samples]');
+ylabel('Amplitude');
+%% Section (B) - Implementing BinaryClassifier
+% As we can see, the goal is to classify two types of signals: digital and natural. 
+% Each type of signal has distinct characteristics, some of which can be helpful in 
+% the classification process. One key difference between these signal types 
+% is that digital signals contain a DC frequency component, whereas natural signals 
+% do not. The DC energy tends to the mean of the digital symbols which equals to 0.5.
+% For the natural signals there is no DC because we choose the sine frequency and 
+% gaussian s.t. the mean over time equals to zero (like wavelets). 
+% Considering the constraints above, we offer the following classificator - if the signals DC energy 
+% is above 0.5 - it's of digital type otherwise it's natural.
+% The mean of the signal can be approximated using Filter function with FIR
+% filter which is defined as $ones(1,N)/N$ where N is the input signal
+% length. The logic is opposite to the desired threshold defined in the
+% question (c >= 0.5 -> natural otherwise digital), so if we look at $1 -
+% DC_energy$ we get the desired logic. 
+% P.S the DC energy is noisy (because of the WGN noise, the variance 
+% of DC_energy estimation is equal to $\sigma^2/N$), so instead of $c=1-DC_energy$ we define it as
+% $c=a-DC_energy$ where $0<a<1$, we used $a=0.95$ which achieves 100%
+% accuracy.
+
+figure;
+imshow(imread('blocks3\BinaryClassifier.png'));
+title("BinaryClassifier block diagram", 'FontSize', fontSize);
+%% Section (C)
+N = 4096;
+
+is_natural  = false(30, 1);
+predictions = zeros(30, 1);
+for i = 1:10
+    [x, is_natural(i)] = SignalRandom(N);
+    n1 = WGN(N, 0, 0.1);
+    x_noised = Add(x, n1);
+    predictions(i) = BinaryClassifier(x_noised);
+end
+
+for i = 11:20
+    [x, is_natural(i)] = SignalRandom(N);
+    n2 = WGN(N, 0, 0.5);
+    x_noised = Add(x, n2);
+    predictions(i) = BinaryClassifier(x_noised);
+end
+
+for i = 21:30
+    [x, is_natural(i)] = SignalRandom(N);
+    predictions(i) = BinaryClassifier(x);
+end
+
+signal_label = categorical(["digital", "natural"]);
+
+figure;
+gscatter(1:30, predictions, signal_label(is_natural+1), "br");
+title('Binary Classifier results');
+xlabel('Signal index');
+ylabel('c (Prediction Score)');
+##### SOURCE END #####
+-->
+</body>
+</html>
