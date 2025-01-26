@@ -1,7 +1,7 @@
 clear all; clc; close all;
 %% Section (A) - Adding new utils
 % We have implemented new utils using blocks from previous homeworks.
-% Here the diagram blocks and examples:
+% Here are the diagram blocks and examples:
 fontSize = 20;
 N = 4096;
 
@@ -84,8 +84,8 @@ figure;
 imshow(imread('blocks3\GreaterThan.png'));
 title("GreaterThan block diagram", 'FontSize', fontSize);
 
-[zers, ~] = Sine(N, 0, 0);
-[z] = GreaterThan(y, zers);
+[zers, ~] = Sine(0, N, 0);
+[z] = GreaterThan(y, zers.');
 figure; nexttile;
 plot(y, '--*');
 title('Y signal');
@@ -97,13 +97,27 @@ plot(z, '--*');
 title('Z signal');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
-%% Section (B)
+%% Section (B) - Implementing BinaryClassifier
+% As we can see, the goal is to classify two types of signals: digital and natural. 
+% Each type of signal has distinct characteristics, some of which can be helpful in 
+% the classification process. One key difference between these signal types 
+% is that digital signals contain a DC frequency component, whereas natural signals 
+% do not. The DC energy tends to the mean of the digital symbols which equals to 0.5.
+% For the natural signals there is no DC because we choose the sine frequency and 
+% gaussian s.t. the mean over time equals to zero (like wavelets, sine multipled by gaussian). 
+% So we offer the following classificator - if the signal DC energy 
+% is above 0.5 - the signal is of digital type otherwise it's natural.
+% The mean of the signal can be approximated using Filter function with FIR
+% filter wich is defined as $ones(1,N)/N$ where N is the
 
+figure;
+imshow(imread('blocks3\BinaryClassifier.png'));
+title("BinaryClassifier block diagram", 'FontSize', fontSize);
 %% Section (C)
 N = 4096;
 
-is_natural  = zers(30, 1);
-predictions = zers(30, 1);
+is_natural  = false(30, 1);
+predictions = zeros(30, 1);
 for i = 1:10
     [x, is_natural(i)] = SignalRandom(N);
     n1 = WGN(N, 0, 0.1);
@@ -122,6 +136,3 @@ for i = 21:30
     [x, is_natural(i)] = SignalRandom(N);
     predictions(i) = BinaryClassifier(x);
 end
-%%
-figure;
-plot(x, '--*');

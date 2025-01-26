@@ -13,5 +13,5 @@ if NormalizeTD
     discrete_time_domain = discrete_time_domain / N;
 end
 y_n = exp(-((discrete_time_domain - u).^2)/s^2);
-y_n = y_n / sum(y_n);
+y_n = y_n / max(y_n);
 end

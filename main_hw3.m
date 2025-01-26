@@ -1,7 +1,7 @@
 clear all; clc; close all;
 %% Section (A) - Adding new utils
 % We have implemented new utils using blocks from previous homeworks.
-% Here the diagram blocks and examples:
+% Here are the diagram blocks and examples:
 fontSize = 20;
 N = 4096;
 
@@ -97,13 +97,34 @@ plot(z, '--*');
 title('Z signal');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
-%% Section (B)
+%% Section (B) - Implementing BinaryClassifier
+% As we can see, the goal is to classify two types of signals: digital and natural. 
+% Each type of signal has distinct characteristics, some of which can be helpful in 
+% the classification process. One key difference between these signal types 
+% is that digital signals contain a DC frequency component, whereas natural signals 
+% do not. The DC energy tends to the mean of the digital symbols which equals to 0.5.
+% For the natural signals there is no DC because we choose the sine frequency and 
+% gaussian s.t. the mean over time equals to zero (like wavelets). 
+% Considering the constraints above, we offer the following classificator - if the signals DC energy 
+% is above 0.5 - it's of digital type otherwise it's natural.
+% The mean of the signal can be approximated using Filter function with FIR
+% filter which is defined as $ones(1,N)/N$ where N is the input signal
+% length. The logic is opposite to the desired threshold defined in the
+% question (c >= 0.5 -> natural otherwise digital), so if we look at $1 -
+% DC_energy$ we get the desired logic. 
+% P.S the DC energy is noisy (because of the WGN noise, the variance 
+% of DC_energy estimation is equal to $\sigma^2/N$), so instead of $c=1-DC_energy$ we define it as
+% $c=a-DC_energy$ where $0<a<1$, we used $a=0.95$ which achieves 100%
+% accuracy.
 
+figure;
+imshow(imread('blocks3\BinaryClassifier.png'));
+title("BinaryClassifier block diagram", 'FontSize', fontSize);
 %% Section (C)
 N = 4096;
 
-is_natural  = zers(30, 1);
-predictions = zers(30, 1);
+is_natural  = false(30, 1);
+predictions = zeros(30, 1);
 for i = 1:10
     [x, is_natural(i)] = SignalRandom(N);
     n1 = WGN(N, 0, 0.1);
@@ -122,6 +143,11 @@ for i = 21:30
     [x, is_natural(i)] = SignalRandom(N);
     predictions(i) = BinaryClassifier(x);
 end
-%%
+
+signal_label = categorical(["digital", "natural"]);
+
 figure;
-plot(x, '--*');
+gscatter(1:30, predictions, signal_label(is_natural+1), "br");
+title('Binary Classifier results');
+xlabel('Signal index');
+ylabel('c (Prediction Score)');
