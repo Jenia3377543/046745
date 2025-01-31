@@ -3,6 +3,7 @@ arguments
     x 
 end
 N_samples = length(x);
-DC_energy = Filter(1, ones(1, N_samples)/N_samples, x); 
+[haar_mean, ~] = Rect(0,N_samples,N_samples);
+DC_energy = Filter(1, haar_mean, x); 
 c = Add(0.95, Scalar(-1, DC_energy)); 
 end
