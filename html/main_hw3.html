@@ -7,9 +7,9 @@ This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
       -->
 <title>main_hw3</title>
-<meta name="generator" content="MATLAB 24.2">
+<meta name="generator" content="MATLAB 24.1">
 <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
-<meta name="DC.date" content="2025-01-26">
+<meta name="DC.date" content="2025-02-01">
 <meta name="DC.source" content="main_hw3.m">
 <style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
@@ -83,10 +83,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 <a href="#2">Section (A) - Adding new utils</a>
 </li>
 <li>
-<a href="#3">Section (B) - Implementing BinaryClassifier</a>
+<a href="#3">GreaterThan block</a>
 </li>
 <li>
-<a href="#4">Section (C)</a>
+<a href="#4">Section (B) - Implementing BinaryClassifier</a>
+</li>
+<li>
+<a href="#5">Section (C)</a>
 </li>
 </ul>
 </div>
@@ -103,7 +106,8 @@ title(<span class="string">"DigitalRandom block diagram"</span>, <span class="st
 
 figure;
 [x] = DigitalRandom(N);
-plot(x, <span class="string">'--*'</span>);
+stem(x, <span class="string">'--.'</span>);
+xlim([0,32]);
 title(<span class="string">'Example for DigitalRandom block'</span>);
 xlabel(<span class="string">'Time domain [samples]'</span>);
 ylabel(<span class="string">'Amplitude'</span>);
@@ -117,14 +121,14 @@ figure;
 nexttile;
 sgtitle(<span class="string">'Example for NaturalRandom block'</span>);
 
-plot(y_15.', <span class="string">'--*'</span>);
+plot(y_15.', <span class="string">'--.'</span>);
 xlabel(<span class="string">'Time domain [samples]'</span>);
 ylabel(<span class="string">'Amplitude'</span>);
 legend(compose(<span class="string">'Signal #%d'</span>, 1:size(y_15, 1)));
 title(<span class="string">'Signals'</span>);
 
 nexttile;
-plot(y, <span class="string">'--*'</span>);
+plot(y, <span class="string">'--.'</span>);
 xlabel(<span class="string">'Time domain [samples]'</span>);
 ylabel(<span class="string">'Amplitude'</span>);
 title(<span class="string">'Sum of signals'</span>);
@@ -138,19 +142,25 @@ figure;
 nexttile;
 sgtitle(<span class="string">'Example for MuxRandom block'</span>);
 
-plot(x, <span class="string">'--*'</span>);
+stem(x);
+xlim([0,32]);
 title(<span class="string">'X signal'</span>);
 xlabel(<span class="string">'Time domain [samples]'</span>);
 ylabel(<span class="string">'Amplitude'</span>);
 
 nexttile;
-plot(y, <span class="string">'--*'</span>);
+plot(y, <span class="string">'--.'</span>);
 title(<span class="string">'Y signal'</span>);
 xlabel(<span class="string">'Time domain [samples]'</span>);
 ylabel(<span class="string">'Amplitude'</span>);
 
 nexttile;
-plot(z, <span class="string">'--*'</span>);
+<span class="keyword">if</span> b == 1
+    stem(z);
+    xlim([0,32]);
+<span class="keyword">else</span>
+    plot(z, <span class="string">'--.'</span>);
+<span class="keyword">end</span>
 title(compose(<span class="string">'Z signal, b=%d'</span>, b));
 xlabel(<span class="string">'Time domain [samples]'</span>);
 ylabel(<span class="string">'Amplitude'</span>);
@@ -163,40 +173,75 @@ figure;
 [x,c] = SignalRandom(N);
 nexttile;
 sgtitle({<span class="string">'Example for SignalRandom block'</span>, compose(<span class="string">"c=%d"</span>, c)});
-
-plot(x, <span class="string">'--*'</span>);
+<span class="keyword">if</span> c == 0
+    stem(x);
+    xlim([0, 32]);
+<span class="keyword">else</span>
+    plot(x, <span class="string">'--.'</span>);
+<span class="keyword">end</span>
 xlabel(<span class="string">'Time domain [samples]'</span>);
 ylabel(<span class="string">'Amplitude'</span>);
-
-<span class="comment">% As Example for GreaterThan block, we select 2 signals - Natural signal</span>
-<span class="comment">% from Natural signal block and signal of zeros (Using Sine block with DC</span>
-<span class="comment">% frequency). We expect that applying GreaterThan block will return only</span>
-<span class="comment">% politive values, the negative one will be replaced with zeros.</span>
-figure;
+</pre>
+<img vspace="5" hspace="5" src="main_hw3_01.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_02.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_03.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_04.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_05.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_06.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_07.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_08.png" alt=""> <h2 id="3">GreaterThan block</h2>
+<p>As Example for GreaterThan block, we select 2 signals - Natural signal from Natural signal block and signal of zeros (Using Sine block with DC frequency). We expect that applying GreaterThan block will return only politive values, the negative one will be replaced with zeros.</p>
+<pre class="codeinput">figure;
 imshow(imread(<span class="string">'blocks3\GreaterThan.png'</span>));
 title(<span class="string">"GreaterThan block diagram"</span>, <span class="string">'FontSize'</span>, fontSize);
 
 [zers, ~] = Sine(0, N, 0);
 [z] = GreaterThan(y, zers.');
 figure; nexttile;
-plot(y, <span class="string">'--*'</span>);
+plot(y, <span class="string">'--.'</span>);
 title(<span class="string">'Y signal'</span>);
 xlabel(<span class="string">'Time domain [samples]'</span>);
 ylabel(<span class="string">'Amplitude'</span>);
 
 nexttile;
-plot(z, <span class="string">'--*'</span>);
+plot(z, <span class="string">'--.'</span>);
 title(<span class="string">'Z signal'</span>);
 xlabel(<span class="string">'Time domain [samples]'</span>);
 ylabel(<span class="string">'Amplitude'</span>);
 </pre>
-<img vspace="5" hspace="5" src="main_hw3_01.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_02.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_03.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_04.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_05.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_06.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_07.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_08.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_09.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_10.png" alt=""> <h2 id="3">Section (B) - Implementing BinaryClassifier</h2>
-<p>As we can see, the goal is to classify two types of signals: digital and natural. Each type of signal has distinct characteristics, some of which can be helpful in the classification process. One key difference between these signal types is that digital signals contain a DC frequency component, whereas natural signals do not. The DC energy tends to the mean of the digital symbols which equals to 0.5. For the natural signals there is no DC because we choose the sine frequency and gaussian s.t. the mean over time equals to zero (like wavelets). Considering the constraints above, we offer the following classificator - if the signals DC energy is above 0.5 - it's of digital type otherwise it's natural. The mean of the signal can be approximated using Filter function with FIR filter which is defined as <img src="main_hw3_eq03720133834565466505.png" alt="$ones(1,N)/N$"> where N is the input signal length. The logic is opposite to the desired threshold defined in the question (c &gt;= 0.5 -&gt; natural otherwise digital), so if we look at <img src="main_hw3_eq10277030821125680877.png" alt="$1 - DC_energy$"> we get the desired logic. P.S the DC energy is noisy (because of the WGN noise, the variance of DC_energy estimation is equal to <img src="main_hw3_eq12662098722898484428.png" alt="$\sigma^2/N$">), so instead of <img src="main_hw3_eq06066554659236034914.png" alt="$c=1-DC_energy$"> we define it as <img src="main_hw3_eq15127200570979126730.png" alt="$c=a-DC_energy$"> where <img src="main_hw3_eq15290478093240936105.png" alt="$0<a<1$">, we used <img src="main_hw3_eq06501960805979905040.png" alt="$a=0.95$"> which achieves 100% accuracy.</p>
-<pre class="codeinput">figure;
+<img vspace="5" hspace="5" src="main_hw3_09.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_10.png" alt=""> <h2 id="4">Section (B) - Implementing BinaryClassifier</h2>
+<p>As we can see, the goal is to classify two types of signals: digital and natural. Each type of signal has distinct characteristics, some of which can be helpful in the classification process. One key difference between these signal types is that digital signals contain a DC frequency component, whereas natural signals do not. The DC energy tends to the mean of the digital symbols which equals to 0.5. For the natural signals there is no DC because we choose the sine frequency and gaussian s.t. the mean over time equals to zero. Considering the constraints above, we offer the following classificator - if the signals DC energy is above 0.5 - it's of digital type otherwise it's natural. The mean of the signal can be approximated using the DC base function of Haar wavelet, which can be defined using Rect block from HW1 and applied using Filter function (it's equivalent to FIR filter - <img src="main_hw3_eq03720133834565466505.png" alt="$ones(1,N)/N$"> where N is the input signal length). The logic is opposite to the desired threshold defined in the question (c &gt;= 0.5 -&gt; natural otherwise digital), so if we look at <img src="main_hw3_eq02915712780150763171.png" alt="$1 - DC_{energy}$"> we get the desired logic.</p>
+<pre class="codeinput">
+<span class="comment">% P.S the DC energy is noisy (because of the WGN noise, the variance</span>
+<span class="comment">% of $DC_{energy}$ estimation is equal to $\sigma^2/N$), so instead of $c=1-DC_{energy}$ we define it as</span>
+<span class="comment">% $c=a-DC_{energy}$ where $0&lt;a&lt;1$, we used $a=0.95$ which achieves 100%</span>
+<span class="comment">% accuracy.</span>
+
+figure;
 imshow(imread(<span class="string">'blocks3\BinaryClassifier.png'</span>));
 title(<span class="string">"BinaryClassifier block diagram"</span>, <span class="string">'FontSize'</span>, fontSize);
 </pre>
-<img vspace="5" hspace="5" src="main_hw3_11.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_12.png" alt=""> <h2 id="4">Section (C)</h2>
+<img vspace="5" hspace="5" src="main_hw3_11.png" alt=""> <h2 id="5">Section (C)</h2>
+<p>We generate 30 random signals belonging to two categories: natural and digital. Each signal is subjected to one of three noise levels:</p>
+<div>
+<ul>
+<li>No noise at all</li>
+<li>
+<img src="main_hw3_eq05894448948654067828.png" alt="$\sigma^2 = 0.1^2$"></li>
+<li>
+<img src="main_hw3_eq11453889330195818677.png" alt="$\sigma^2 = 0.5^2$"></li>
+</ul>
+</div>
+<p>Each signal is then processed by a BinaryClassifier, which predicts the signal type and outputs a classification score <img src="main_hw3_eq10092834284133181525.png" alt="$c$">:</p>
+<div>
+<ul>
+<li>
+<img src="main_hw3_eq01125216055948103308.png" alt="$c<=0.5$"> - Natural signal</li>
+<li>
+<img src="main_hw3_eq05970931103281323742.png" alt="$c >0.5$"> - Digital signal</li>
+</ul>
+</div>
+<p>Finally, we visualize the classification scores against the signal index, using color to distinguish between signal types:</p>
+<div>
+<ul>
+<li>Red - Natural signals</li>
+<li>Blues - Digital signals</li>
+</ul>
+</div>
+<p>The results demonstrate that the DC component, extracted using the Haar wavelet, is an effective feature for signal type prediction. The BinaryClassifier achieves perfect classification accuracy.</p>
 <pre class="codeinput">N = 4096;
 
 is_natural  = false(30, 1);
@@ -228,9 +273,9 @@ title(<span class="string">'Binary Classifier results'</span>);
 xlabel(<span class="string">'Signal index'</span>);
 ylabel(<span class="string">'c (Prediction Score)'</span>);
 </pre>
-<img vspace="5" hspace="5" src="main_hw3_13.png" alt=""> <img vspace="5" hspace="5" src="main_hw3_14.png" alt=""> <p class="footer">
+<img vspace="5" hspace="5" src="main_hw3_12.png" alt=""> <p class="footer">
 <br>
-<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2024b</a>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2024a</a>
 <br>
 </p>
 </div>
@@ -249,7 +294,8 @@ title("DigitalRandom block diagram", 'FontSize', fontSize);
 
 figure;
 [x] = DigitalRandom(N);
-plot(x, 'REPLACE_WITH_DASH_DASH*');
+stem(x, 'REPLACE_WITH_DASH_DASH.');
+xlim([0,32]);
 title('Example for DigitalRandom block');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
@@ -263,14 +309,14 @@ figure;
 nexttile;
 sgtitle('Example for NaturalRandom block');
 
-plot(y_15.', 'REPLACE_WITH_DASH_DASH*');
+plot(y_15.', 'REPLACE_WITH_DASH_DASH.');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
 legend(compose('Signal #%d', 1:size(y_15, 1)));
 title('Signals');
 
 nexttile;
-plot(y, 'REPLACE_WITH_DASH_DASH*');
+plot(y, 'REPLACE_WITH_DASH_DASH.');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
 title('Sum of signals');
@@ -284,19 +330,25 @@ figure;
 nexttile;
 sgtitle('Example for MuxRandom block');
 
-plot(x, 'REPLACE_WITH_DASH_DASH*');
+stem(x);
+xlim([0,32]);
 title('X signal');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
 
 nexttile;
-plot(y, 'REPLACE_WITH_DASH_DASH*');
+plot(y, 'REPLACE_WITH_DASH_DASH.');
 title('Y signal');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
 
 nexttile;
-plot(z, 'REPLACE_WITH_DASH_DASH*');
+if b == 1
+    stem(z);
+    xlim([0,32]);
+else
+    plot(z, 'REPLACE_WITH_DASH_DASH.');
+end
 title(compose('Z signal, b=%d', b));
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
@@ -309,11 +361,15 @@ figure;
 [x,c] = SignalRandom(N);
 nexttile;
 sgtitle({'Example for SignalRandom block', compose("c=%d", c)});
-
-plot(x, 'REPLACE_WITH_DASH_DASH*');
+if c == 0
+    stem(x);
+    xlim([0, 32]);
+else
+    plot(x, 'REPLACE_WITH_DASH_DASH.');
+end
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
-
+%% GreaterThan block
 % As Example for GreaterThan block, we select 2 signals - Natural signal
 % from Natural signal block and signal of zeros (Using Sine block with DC
 % frequency). We expect that applying GreaterThan block will return only
@@ -325,13 +381,13 @@ title("GreaterThan block diagram", 'FontSize', fontSize);
 [zers, ~] = Sine(0, N, 0);
 [z] = GreaterThan(y, zers.');
 figure; nexttile;
-plot(y, 'REPLACE_WITH_DASH_DASH*');
+plot(y, 'REPLACE_WITH_DASH_DASH.');
 title('Y signal');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
 
 nexttile;
-plot(z, 'REPLACE_WITH_DASH_DASH*');
+plot(z, 'REPLACE_WITH_DASH_DASH.');
 title('Z signal');
 xlabel('Time domain [samples]');
 ylabel('Amplitude');
@@ -342,23 +398,48 @@ ylabel('Amplitude');
 % is that digital signals contain a DC frequency component, whereas natural signals 
 % do not. The DC energy tends to the mean of the digital symbols which equals to 0.5.
 % For the natural signals there is no DC because we choose the sine frequency and 
-% gaussian s.t. the mean over time equals to zero (like wavelets). 
+% gaussian s.t. the mean over time equals to zero. 
 % Considering the constraints above, we offer the following classificator - if the signals DC energy 
 % is above 0.5 - it's of digital type otherwise it's natural.
-% The mean of the signal can be approximated using Filter function with FIR
-% filter which is defined as $ones(1,N)/N$ where N is the input signal
-% length. The logic is opposite to the desired threshold defined in the
+% The mean of the signal can be approximated using the DC base function of
+% Haar wavelet, which can be defined using Rect block from HW1 and applied
+% using Filter function (it's equivalent to FIR filter - $ones(1,N)/N$ where N is the input signal
+% length). The logic is opposite to the desired threshold defined in the
 % question (c >= 0.5 -> natural otherwise digital), so if we look at $1 -
-% DC_energy$ we get the desired logic. 
+% DC_{energy}$ we get the desired logic.
+
 % P.S the DC energy is noisy (because of the WGN noise, the variance 
-% of DC_energy estimation is equal to $\sigma^2/N$), so instead of $c=1-DC_energy$ we define it as
-% $c=a-DC_energy$ where $0<a<1$, we used $a=0.95$ which achieves 100%
+% of $DC_{energy}$ estimation is equal to $\sigma^2/N$), so instead of $c=1-DC_{energy}$ we define it as
+% $c=a-DC_{energy}$ where $0<a<1$, we used $a=0.95$ which achieves 100%
 % accuracy.
 
 figure;
 imshow(imread('blocks3\BinaryClassifier.png'));
 title("BinaryClassifier block diagram", 'FontSize', fontSize);
 %% Section (C)
+% We generate 30 random signals belonging to two categories: natural and digital. 
+% Each signal is subjected to one of three noise levels:
+% 
+% * No noise at all
+% * $\sigma^2 = 0.1^2$
+% * $\sigma^2 = 0.5^2$
+% 
+% Each signal is then processed by a BinaryClassifier, which predicts the
+% signal type and outputs a classification score $c$:
+% 
+% * $c<=0.5$ - Natural signal
+% * $c >0.5$ - Digital signal
+% 
+% Finally, we visualize the classification scores against the signal index, using color 
+% to distinguish between signal types:
+% 
+% * Red - Natural signals
+% * Blues - Digital signals
+% 
+% The results demonstrate that the DC component, extracted using the Haar wavelet, is an effective 
+% feature for signal type prediction. The BinaryClassifier achieves perfect classification accuracy.
+
+
 N = 4096;
 
 is_natural  = false(30, 1);

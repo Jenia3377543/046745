@@ -115,12 +115,13 @@ ylabel('Amplitude');
 % is that digital signals contain a DC frequency component, whereas natural signals 
 % do not. The DC energy tends to the mean of the digital symbols which equals to 0.5.
 % For the natural signals there is no DC because we choose the sine frequency and 
-% gaussian s.t. the mean over time equals to zero (like wavelets). 
+% gaussian s.t. the mean over time equals to zero. 
 % Considering the constraints above, we offer the following classificator - if the signals DC energy 
 % is above 0.5 - it's of digital type otherwise it's natural.
-% The mean of the signal can be approximated using Filter function with FIR
-% filter which is defined as $ones(1,N)/N$ where N is the input signal
-% length. The logic is opposite to the desired threshold defined in the
+% The mean of the signal can be approximated using the DC base function of
+% Haar wavelet, which can be defined using Rect block from HW1 and applied
+% using Filter function (it's equivalent to FIR filter - $ones(1,N)/N$ where N is the input signal
+% length). The logic is opposite to the desired threshold defined in the
 % question (c >= 0.5 -> natural otherwise digital), so if we look at $1 -
 % DC_{energy}$ we get the desired logic.
 
@@ -133,6 +134,29 @@ figure;
 imshow(imread('blocks3\BinaryClassifier.png'));
 title("BinaryClassifier block diagram", 'FontSize', fontSize);
 %% Section (C)
+% We generate 30 random signals belonging to two categories: natural and digital. 
+% Each signal is subjected to one of three noise levels:
+% 
+% * No noise
+% * $\sigma^2 = 0.1^2$
+% * $\sigma^2 = 0.5^2$
+% 
+% Each signal is then processed by a BinaryClassifier, which predicts the
+% signal type and outputs a classification score $c$:
+% 
+% * $c<=0.5$ - Natural signal
+% * $c >0.5$ - Digital signal
+% 
+% Finally, we visualize the classification scores against the signal index, using color 
+% to distinguish between signal types:
+% 
+% * Red - Natural signals
+% * Blues - Digital signals
+% 
+% The results demonstrate that the DC component, extracted using the Haar wavelet, is an effective 
+% feature for signal type prediction. The BinaryClassifier achieves perfect classification accuracy.
+
+
 N = 4096;
 
 is_natural  = false(30, 1);
